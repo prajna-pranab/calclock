@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<title>UCC Calendar Clock</title>
+	<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<!-- load libraries, manifest and stylesheets -->
+	<script src="js/timerlib.js" type="text/javascript"></script>
+	<script src="js/UCClib.js" type="text/javascript"></script>
+	<link rel="manifest" href="manifest.json" />
+	<link href="css/normalize.css" rel="stylesheet" />
+	<link href="css/calclock.css" rel="stylesheet" />
+	<link rel="shortcut icon" type="image/png" href="asset/images/ucc32ico.png" />
+	<link rel="apple-touch-icon-precomposed" href="asset/images/ucc512ico.png" />
+</head>
+<body>
+	<div id="progress">
+		<img id="spinner" src="asset/images/spinner.svg" alt="">
+	</div>
+	<div id='clockbox'>
+		<canvas id="clockCanvas" width="1100" height="1100">
+			<img src="asset/images/ucc512ico.png" alt="Snapshot of UCC Calendar Clock">
+			<p>Anyone seeing this message may think their Internet browser doesn't support<br>
+				HTML5 Canvas. It probably does but all you will see, unless you visit the page,<br>
+				is this screen.</p>
+			<p>The image above is just a snapshot. Any browser that doesn't support the HTML5 Canvas,<br>
+				including apps like FB, spiders, etc, will be unable to display or interact with<br>
+				the Universal Community Calendar Clock.. Sorry.</p>
+		</canvas>
+		<div id="trigram"><div></div><div></div><div></div></div>
+		<div id='dateHeading'></div>
+		<div id="dataTr"></div>
+		<div id="dataBl"></div>
+		<div id="dataBr"></div>
+	</div>
+	<div id='controls'>
+		<div id="setNav" class="selected">
+			<header>
+				<i title='Date Setting Controls' class="selected">Date</i>
+				<i title="Animation Controls">Anim</i>
+				<i title="Change Display Settings">Show</i>
+				<i title="About Calclock">About</i><i>X</i>
+			</header>
+			<div>
+				<div>
+					<button id="ctl_today" title="Reset to today">Today</button><br>
+					<button id="ctl_UCC" title="Set a new UCC Date">UCC Date</button><br>
+					<button id="ctl_Greg" title="Set a Gregorian Date">Gregorian Date</button>
+				</div>
+				<div>
+					<label>
+						<button id="ctl_back" title="Go back 1 step">&#x21BB;</button>
+						Step Back
+					</label><br>
+					<label>
+						<button id="ctl_fwd" title="Go forward 1 step">&#x21BA;</button>
+						Step Forward
+					</label>
+				</div>
+				<div>
+					<label>Step Size<br>
+						<select id='ctl_step' title="Set the size of each animation step">
+							<optgroup label="Step Size">
+								<option value=1>One Day</option>
+								<option value=10 selected>One Decan</option>
+								<option value=30>One Triad</option>
+								<option value='q'>One Quarter</option>
+								<option value=365>One Year</option>
+								<option value='j'>Jump-to</option>
+							</optgroup>
+						</select>
+					</label>
+				</div>
+				<div>
+					<div>
+						<label>Names<br>
+							<select id='ctl_lang' title="Triad/Deekday Language">
+								<optgroup label="Language">
+									<option value=0 selected>Western</option>
+									<option value=1>Hindi</option>
+									<option value=2>Hellenistic</option>
+									<option value=3>Cymraeg</option>
+								</optgroup>
+							</select>
+						</label>
+					</div>
+					<div>
+						<label>UCC&nbsp;Dates<br>
+							<select id='ctl_dateFmt' title="Change UCC Date Format">
+								<optgroup label="Format">
+									<option value=0>Full</option>
+									<option value=1 selected>Long</option>
+									<option value=2>Medium</option>
+									<option value=3>Short</option>
+									<option value=4>Sortable</option>
+								</optgroup>
+							</select>
+						</label>
+					</div>
+					<div>
+						<label>Jump-to<br>
+							<select id='ctl_jump' title="Change UCC Date Format">
+								<optgroup label="Astro Age">
+									<option value=8 selected >Virgo</option>
+									<option value=9>Leo</option>
+									<option value=10>Cancer</option>
+									<option value=11>Gemini</option>
+									<option value=12>Taurus</option>
+									<option value=13>Aries</option>
+									<option value=14>Pisces</option>
+									<option value=15>Aquarius</option>
+									<option value=16>Capricorn</option>
+									<option value=17>Sagittarius</option>
+									<option value=18>Scorpio</option>
+									<option value=19>Libra</option>
+								</optgroup><optgroup label="Yuga">
+									<option class='satya' value=0>Satya Desc</option>
+									<option class='treta' value=1>Treta Desc</option>
+									<option class='dwapara' value=2>Dwapara Desc</option>
+									<option class='kali' value=3>Kali Desc</option>
+									<option class='kali' value=4>Kali Asc</option>
+									<option class='dwapara' value=5>Dwapara Asc</option>
+									<option class='treta' value=6>Treta Asc</option>
+									<option class='satya' value=7>Satya Asc</option>
+								</optgroup>
+							</select>
+						</label>
+					</div>
+<!--					<div>
+						<label>Time&nbsp;Zone<br>
+							<select id='ctl_dateZone' title="Change Time Zone">
+								<optgroup label="Zone">
+									<option value=0 selected>UTC</option>
+									<option value=1>Local</option>
+								</optgroup>
+							</select>
+						</label>
+					</div> -->
+				</div>
+			</div>
+		</div>
+		<div id="setAnim">
+			<header>
+				<i title='Date Setting Controls'>Date</i>
+				<i title="Animation Controls">Anim</i>
+				<i title="Change Display Settings">Show</i>
+				<i title="About Calclock">About</i><i>X</i>
+			</header>
+			<div>
+				<div>
+					<label title='Turn animation on'>
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_animate'>
+							<span class="cbValue"></span>
+						</span>
+						Animate
+					</label><br>
+					<label title="Reverse animation direction">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_reverse'>
+							<span class="cbValue"></span>
+						</span>
+						Reverse
+					</label><br>
+					<label title="Start animation at beginning of current year">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_yearStart'>
+							<span class="cbValue"></span>
+						</span>
+						Start of Year
+					</label>
+				</div>
+			</div>
+		</div>
+		<div id="setShow">
+			<header>
+				<i title='Date Setting Controls'>Date</i>
+				<i title="Animation Controls">Anim</i>
+				<i title="Change Display Settings">Show</i>
+				<i title="About Calclock">About</i><i>X</i>
+			</header>
+			<div>
+				<div>
+					<label title="Show menu button?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_trigram' checked>
+							<span class="cbValue"></span>
+						</span>
+						Menu Button
+					</label><br>
+					<label title="Show data tables?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_data' checked>
+							<span class="cbValue"></span>
+						</span>
+						Data Tables
+					</label><br>
+					<label title="Show today's UCC date?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_dateHead' checked>
+							<span class="cbValue"></span>
+						</span>
+						Date Heading
+					</label><br>
+					<label title="Show Moon?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_moon' checked>
+							<span class="cbValue"></span>
+						</span>
+						Moon
+					</label><br>
+					<label title="Show Day Marker?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_dayMkr' checked>
+							<span class="cbValue"></span>
+						</span>
+						Day Marker
+					</label><br>
+					<label title="Show Day Number?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_dayNo' checked>
+							<span class="cbValue"></span>
+						</span>
+						Day Number
+					</label><br>
+					<label title="Show Decan-day symbol?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_deek' checked>
+							<span class="cbValue"></span>
+						</span>
+						Deek Symbol
+					</label><br>
+					<label title="Show Year-So-Far?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_ysf' checked>
+							<span class="cbValue"></span>
+						</span>
+						Year-so-far
+					</label>
+				</div>
+				<div>
+					<label title="Show Sidereal Ring (constellations)?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_sidRing' checked>
+							<span class="cbValue"></span>
+						</span>
+						Sidereal Ring
+					</label><br>
+					<label title="Show Great-Year-So-Far?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_gysf' checked>
+							<span class="cbValue"></span>
+						</span>
+						Gt-Yr-so-far
+					</label><br>
+					<label title="Show Year Marker?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_yearMkr' checked>
+							<span class="cbValue"></span>
+						</span>
+						Year Marker
+					</label><br>
+					<label title="Show Year Number (of 24,000)?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_yearNum' checked>
+							<span class="cbValue"></span>
+						</span>
+						Year Number
+					</label><br>
+					<label title="Show Great Year Ring?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_gyRing' checked>
+							<span class="cbValue"></span>
+						</span>
+						Gt Yr Ring
+					</label><br>
+					<label title="Show sandhi lines?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_sandhis' checked>
+							<span class="cbValue"></span>
+						</span>
+						Sandhis
+					</label><br>
+					<label title="Use Variable Rate of Precession?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_vrp' checked>
+							<span class="cbValue"></span>
+						</span>
+						V.R.P.
+					</label><br>
+					<!--label><input type="checkbox" id='ctl_vrpLines'
+						onChange='toggleVrp()'>VRP Lines</label><br>-->
+				</div>
+			</div>
+		</div>
+		<div id="setAbout">
+			<header>
+				<i title='Date Setting Controls'>Date</i>
+				<i title="Animation Controls">Anim</i>
+				<i title="Change Display Settings">Show</i>
+				<i title="About Calclock">About</i><i>X</i>
+			</header>
+			<div>
+				<p>CalClock shows todays Universal Celestial Calendar date and allows you to
+					display any date in the current Great Year.</p>
+				<p>For in-depth information about the calendar and this app visit
+					<a href='http://universalcelestialcalendar.com/' target="_blank">
+					http://universalcelestialcalendar.com/</a></p>
+				<p>Developed by <a href='http://tomboy-pink.co.uk/' target="_blank">Prajna Pranab</a>
+					and <a href='http://litmusafreeman.net/' target="_blank">Litmus A Freeman</a></p>
+				<p>Copyright &copy; <a href='http://troubadorcommunitytrust.com/' target="_blank">
+					The Troubadour Community Trust</a></p>
+				<p>Software Version: <span id="swVersion"></span> <button id="btnUpdate">Update</button></p>
+				<p>UCC Library Version:
+					<a href='http://tomboy-pink.co.uk/codelib/UCC/index.html' target="_blank">
+						<span id="libVersion"></span></a></p>
+				<p><span id="runMode"></span></p>
+			</div>
+		</div>
+	</div>
+	<div id="setUccDate">
+		<div>Set UCC Date</div>
+		<div>
+			<label><span>Day</span> <input type=number min=0 max=30 id=uccDay /></label>
+		</div>
+		<div>
+			<label><span>Triad</span>
+				<select id=uccTriad>
+					<option value='0'>Zero</option>
+					<option value='1'>ONE Aries &#x2648;</option>
+					<option value='2'>TWO Taurus &#x2649;</option>
+					<option value='3'>THREE Gemini &#x264A;</option>
+					<option value='4'>FOUR Cancer &#x264B;</option>
+					<option value='5'>FIVE Leo &#x264C;</option>
+					<option value='6'>SIX Virgo &#x264D;</option>
+					<option value='7'>SEVEN Libra &#x264E;</option>
+					<option value='8'>EIGHT Scorpio &#x264F;</option>
+					<option value='9'>NINE Sagittarius &#x2650;</option>
+					<option value='10'>TEN Capricorn &#x2651;</option>
+					<option value='11'>ELEVEN Aquarius &#x2652;</option>
+					<option value='12'>TWELVE Pisces &#x2653;</option>
+				</select>
+			</label>
+		</div>
+		<div>
+			<label><span>Year</span> <input type=number min=0 max=24000 id=uccYear /></label>
+		</div>
+		<div>
+			<button id='uccCancel'>Cancel</button>
+			<button id='uccSet'>Set</button>
+		</div>
+	</div>
+	<div id="setGregDate">
+		<div>Set Gregorian Date</div>
+		<div>
+			<label><span>Day</span> <input type=number min=1 max=31 id=gregDay /></label>
+		</div>
+		<div>
+			<label><span>Month</span>
+				<select id=gregMonth>
+					<option value='0'>January</option>
+					<option value='1'>February</option>
+					<option value='2'>March</option>
+					<option value='3'>April</option>
+					<option value='4'>May</option>
+					<option value='5'>June</option>
+					<option value='6'>July</option>
+					<option value='7'>August</option>
+					<option value='8'>September</option>
+					<option value='9'>October</option>
+					<option value='10'>November</option>
+					<option value='11'>December</option>
+				</select>
+			</label>
+		</div>
+		<div>
+			<label><span>Year</span> <input type="text" id=gregYear /></label>
+		</div>
+		<div>
+			<button id='gregCancel'>Cancel</button>
+			<button id='gregSet'>Set</button>
+		</div>
+	</div>
+	<div id="a2hsBanner">Add UCC Clock to your Home Screen?
+		<button id="a2hsYes">Yes</button> <button id="a2hsNo">No</button>
+	</div>
+	<script type="text/javascript">
+		// show loading progress spinner
+		(function() {
+			const tick = () => {
+				// percent of time elapsed as float between 0.0 and 1.0
+				const progress = myTimer.progress();
+				// rotation from 0 to 360 degrees
+				const rot = progress * 360;
+				// animate it by applying the transforms and fade
+				spinner.style.transform = `rotateZ(${rot}deg)`;
+				// recursively call the tick() callback until our timer tells
+				// us the duration has passed
+				if (!myTimer.done) requestAnimationFrame(tick);
+				// restart the animation
+				else restartAnim();
+			}
+			const restartAnim = () => {
+				// restart the animation until the progress div is hidden
+				if (progress.style.display != 'none')
+					myTimer = new timer(requestAnimationFrame(tick), 1000);
+			}
+			// get progress div and spinner image references
+			const progress = document.querySelector('#progress');
+			const spinner = document.querySelector('#spinner');
+			// kick off the animation
+			let myTimer = new timer(requestAnimationFrame(tick), 1000);
+	}());
+	</script>
+	<script src="js/calclock.js" type="text/javascript" defer></script>
+</body>
+</html>

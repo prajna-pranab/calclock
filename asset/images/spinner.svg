@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="90"
+   height="90"
+   id="spinner">
+  <defs>
+    <linearGradient
+       id="grad1"
+       x1="61.783791"
+       y1="3.7283134"
+       x2="24.426323"
+       y2="71.811592"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-5.0045193,-4.73277)">
+      <stop offset="0%" stop-color="orange" />
+      <stop stop-color="orange" offset="0.37567076" style="stop-color:orange;stop-opacity:0.54010695" />
+      <stop stop-color="orange" offset="1" style="stop-color:orange;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+  <path
+     d="m 44.99548,5.26723
+     		c -16.178472,0 -30.764021,9.745741 -36.9549036,24.692433 -6.19087,14.946661 -2.767789,32.150543 8.6720696,43.590401"
+     id="semicirc"
+     style="fill:none;stroke:url(#grad1);stroke-width:10;stroke-linecap:round" />
+</svg>

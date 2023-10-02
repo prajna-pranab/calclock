@@ -1,0 +1,393 @@
+* {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+body {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	font-size: 16px;
+	background-color: black;
+	color: white;
+	font-family: 'RobotoRegular', 'Droid Sans', sans-serif;
+	padding: 0;
+	margin: 0;
+}
+input, button, select, option { font-size: 1rem; margin-top: .2rem; padding: 0; }
+input, select {
+	background-color: #ddd;
+	padding: .01rem;
+	border-radius: .1rem;
+}
+select, option, optgroup, button {
+	background-color: #ddd;
+	padding: .1rem;
+	border-radius: .2rem;
+	border: 1px solid gray;
+	box-shadow: 1px 1px 0px .5px #999;
+	margin: 2px;
+	text-shadow: 1px 1px 1px white, -1px -1px 1px gray;
+	background-image: linear-gradient(
+		to top,
+		rgba(50, 50, 255, 0.5),
+		rgba(200, 200, 255, 0.6) 70%,
+		rgba(50, 50, 255, 0.5)
+	);
+}
+label { cursor: pointer; }
+.chkbox input {
+	border: 0;
+	clip: rect(0,0,0,0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+}
+.cbValue {
+	background-color: rgba(255,100,100,.5);
+	background-image: linear-gradient(
+		to top,
+		rgba(255,200,200,.5),
+		rgba(255,100,100,.5) 30%,
+		rgba(255,200,200,.5)
+	);
+	border: 0.0625rem solid rgba(50,50,255,0.75);
+	border-radius: .25rem;
+	box-shadow: 1px 1px 2px black, -1px -1px 2px white;
+	display: inline-block;
+	height: 1rem;
+	position: relative;
+	transition: left .2s ease;
+	vertical-align: -0.25rem;
+	width: 2.5rem;
+	margin: 4px 0 0 2px;
+}
+.cbValue::before {
+	background-color: rgba(255,50,50,.75);
+	border: .1rem solid;
+	border-color: inherit;
+	border-radius: 25%;
+	content: '';
+	display: block;
+	height: .75rem;
+	width: .75rem;
+	left: 40%;
+	margin-left: -0.9375rem;
+	margin-top: -0.125rem;
+	position: absolute;
+	top: .1rem;
+	transition: left .2s ease;
+}
+input:checked + .cbValue {
+	background-color: rgba(100,200,100,0.5);
+	background-image: linear-gradient(
+		to top,
+		rgba(200,255,200,.5),
+		rgba(50,200,50,.5) 70%,
+		rgba(200,255,200,.5)
+	);
+	border-color: rgba(50,50,255,0.75);
+}
+input:checked + .cbValue::before {
+	background-color: rgba(100,255,100,0.75);
+	left: 99%;
+}
+a {
+	color: white;
+	font-weight: bold;
+}
+.satya { background-color: #f7c200; }
+.treta { background-color: white; }
+.dwapara { background-color: #b85c00; }
+.kali { background-color: gray; }
+.festival { color: yellow; font-weight: bold; }
+#progress {
+	position: relative;
+	width: 100px;
+	height: 100px;
+	left: calc(50vw - 50px);
+	top: calc(50vh - 50px);
+	z-index: 10;
+	display: block;
+}
+#clockbox {
+	width: 100vmin;
+	height: 100vmin;
+	position: relative;
+	margin: 0 auto;
+}
+#clockCanvas {
+	display: block;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: 2;
+}
+/* hide border until images loaded */
+#clockCanvas.loaded { border: 1px solid rgba(100, 100, 150, 0.8); }
+/* trigram (menu button) */
+#trigram {
+	position: absolute;
+	width: 2rem;
+	top: .5rem;
+	left: .5rem;
+	opacity: 0.8;
+	z-index: 11;
+	display: none;
+}
+/* hide trigram until images loaded */
+#trigram.loaded { display: block; }
+/* trigram lines */
+#trigram > div {
+	height: .25rem;
+	border-radius: .1rem;
+	background-color: white;
+	border-color: rgba(255, 100, 50, 0.3);
+	margin-bottom: .2rem;
+	background-image: linear-gradient(
+		to top,
+		rgba(0, 0, 0, 0.8),
+		rgba(255, 255, 255, 1.0) 30%,
+		rgba(255, 255, 255, 0.9) 70%,
+		rgba(0, 0, 0, 0.8)
+	);
+}
+/* lowest bar */
+#trigram > div:last-of-type { margin-bottom: 0; }
+#trigram.hidden { opacity: 0; }
+#trigram.removed { display: none; }
+/* Date Heading */
+#dateHeading {
+	position: relative;
+	width: 50%;
+	top: .2rem;
+	margin: 0 auto;
+	font-size: 1.2rem;
+	font-weight: bold;
+	color: orange;
+	text-align: center;
+	cursor: pointer;
+	z-index: 11;
+}
+/* Data Tables */
+#dataTr {
+	position: absolute;
+	width: 33%;
+	top: 1%;
+	left: 65%;
+	font-size: .8rem;
+	text-align: right;
+	z-index: 11;
+}
+#dataBr {
+	position: absolute;
+	width: 33%;
+	top: 86%;
+	left: 65%;
+	font-size: .8rem;
+	text-align: right;
+	z-index: 11;
+}
+#dataBl {
+	position: absolute;
+	width: 45%;
+	top: 89%;
+	font-size: .8rem;
+	margin-left: .5rem;
+	z-index: 11;
+}
+@media screen and (min-resolution: 192dpi) {
+	#dateHeading { font-size: .8rem; }
+	#dataTr, #dataBr, #dataBl { font-size: .4rem; }
+	#dataTr { top: 2%; }
+	#dataBl { top: 90%; }
+	#dataBr { top: 88%; }
+}
+/* menu/settings dialog */
+#controls {
+	position: absolute;
+	top: 1rem;
+	left: calc((50vw - 50vmin) + 1rem);
+	/* when opened it has width */
+	width: 0;
+	background-color: rgba(100, 100, 255, 0.5);
+	font-size: 1rem;
+	z-index: 15;
+	border-radius: 0.5rem;
+	transition: width .1s ease-out;
+	overflow: hidden;
+	height: 20rem;
+}
+/* remove paragraph top margin
+#controls p {
+	margin-block-start: 0;
+}*/
+/* add width, padding, border and shadow when opened */
+#controls.opened {
+	padding: 0.5rem;
+	border: 1px solid gray;
+	box-shadow: 2px 2px 4px 0 #999;
+	width: 20rem;
+}
+/* the tab divs */
+#controls > div {
+	position: absolute;
+	width: 100%;
+	visibility: hidden;
+}
+#controls > div.selected {
+	visibility: visible;
+}
+#controls > div > div {
+	max-height: 19rem;
+	padding-top: .5rem;
+	display: flex;
+	overflow: hidden;
+	flex-flow: column wrap;
+	align-content: flex-start;
+}
+#controls > div > div > * {
+	margin-left: 0.5rem;
+}
+/* the tab heading bar */
+#controls > div > header {
+	margin: -.5rem 0 0 -.5rem;
+	line-height: 1.8rem;
+	width: 100%;
+	background-color: rgba(100, 100, 255, 0.6);
+	background-image: linear-gradient(
+		to top,
+		rgba(50, 50, 255, 0.5),
+		rgba(200, 200, 255, 0.6) 70%,
+		rgba(50, 50, 255, 0.5)
+	);
+}
+/* the tab headings */
+#controls > div > header > i {
+	font-style: normal;
+	font-weight: bold;
+	padding: .5rem .5rem .3rem .5rem;
+	border-right: 1px solid gray;
+	text-shadow: 1px 1px 2px black;
+	margin: 0 0 0 -.25rem;
+	cursor: pointer;
+}
+/* Date tab heading */
+#controls > div > header > i:first-child {
+	margin-left: 0;
+}
+#controls > div > header > i.selected {
+	background-color: rgba(0, 0, 100, 0.5);
+	cursor: default;
+	background-image: linear-gradient(
+		to top,
+		rgba(150, 150, 255, 0.6),
+		rgba(0, 0, 100, 0.5) 30%,
+		rgba(150, 150, 255, 0.6)
+	);
+}
+/* close button */
+#controls > div > header > i:last-child {
+	float: right;
+	border-right: none;
+	margin-top: -.5rem;
+	margin-left: 1rem;
+}
+/* About tab */
+#controls > div > div:last-child {
+	padding: 0;
+	font-size: .8rem;
+	width: 95%;
+	height: 20rem;
+	line-height: .9rem;
+}
+/* About tab paragraphs */
+#controls > div > div:last-child p {
+	margin-top: -.05rem;
+}
+#controls > div > div:last-child p:first-child {
+	margin-top: .5rem;
+}
+/* settings subdivisions */
+#controls > div > div > div, #controls > div > div > div > div {
+	padding: 0 0 1rem;
+}
+/* UCC Date format */
+#controls > div > div > div > div:last-child {
+	padding: 0;
+}
+/* back, forward and close buttons */
+#ctl_back, #ctl_fwd, #setClose {
+	font-weight: bold;
+	font-size: 1.5rem;
+	padding: 0;
+}
+/* Resize and centre controls dialog for mobiles */
+@media screen and (resolution: 192dpi) {
+	#controls {	left: calc(50vw - 10rem); }
+}
+@media screen and (resolution: 192dpi) and (orientation: landscape) {
+	#controls.opened {
+		min-height: calc(100vh - 2rem);
+		width: calc(100vw - 2rem);
+		left: 1rem;
+	}
+}
+/* date setting dialogs */
+#setUccDate, #setGregDate {
+	position: absolute;
+	top: calc(50vh - 5.5rem);
+	left: calc(50vw - 9rem);
+	padding: 1rem;
+	border: 1px solid #ccc;
+	background-color: rgba(180, 100, 255, 0.8);
+	border-radius: 0.5rem;
+	box-shadow: 2px 2px 4px 0 #999;
+	font-size: 1rem;
+	z-index: 20;
+	display: none;
+	flex-flow: column wrap;
+}
+#setGregDate > div, #setUccDate > div {
+	width: 16rem; margin-bottom: .5rem;
+}
+/* heading */
+#setGregDate > div:first-child, #setUccDate > div:first-child {
+	font-weight: bold;
+}
+/* field lables */
+#setGregDate div label span, #setUccDate div label span {
+	display: inline-block; width: 2.8rem;
+}
+/* buttons */
+#setGregDate > div:last-child, #setUccDate > div:last-child {
+	width: 100%; text-align: right;
+	margin: .5rem 0 0;
+}
+#setGregDate > div:last-child button, #setUccDate > div:last-child button {
+	margin-left: .5rem;
+}
+/* add to home screen prompt */
+#a2hsBanner {
+	position: absolute;
+	width: 24rem;
+	top: calc(100vh - 4.5rem);
+	left: calc(50vw - 12rem);
+	padding: .5rem;
+	border-radius: .3rem;
+	background-color: rgba(100,100,200,0.8);
+	font-size: 1rem;
+	text-align: center;
+	z-index: 11;
+	display: none;
+}
+#a2hsBanner > button {
+	font-size: 1rem;
+}
