@@ -1342,7 +1342,7 @@
 
 		// draw the lower left data table
 		if (options.dataTables) {
-			Id('dataBl').innerHTML = `Great Year No: 550<br>
+			Id('dataBl').innerHTML = `Great Year No: 187500<br>
 				Year No: ${today.year} of 24,000<br>
 				${today.zodiac}<br>
 				${today.yuga}`;
