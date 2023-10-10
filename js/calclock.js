@@ -881,6 +881,47 @@
 			if (options.constMarkers) constMarkers(settings);
 			restore();
 		}
+
+		// draw Text along an arc
+		function drawTextAlongArc(str, radius, angle) {
+			var len = str.length,
+			  s;
+			save();
+			
+			let centerAngle = len/2 * .032;
+			let rotationAngle = ((2 * Math.PI) / 12);
+			ctx.rotate(rotationAngle * angle - centerAngle);
+			for (var n = 0; n < len; n++) {
+                s = str[n];
+                ctx.rotate(.032);
+                save();
+                ctx.translate(0, -1 * radius);
+                ctx.strokeStyle = '#001138';
+                ctx.lineWidth = 4;
+                ctx.strokeText(s, 0, 0);
+                ctx.fillText(s, 0, 0);
+                restore();
+			}
+			restore();
+		}
+
+		// draw the constellations titles
+		const doConstellationTitles = settings => {
+			save();
+			ctx.font = '18pt Calibri';
+			ctx.textAlign = 'center';
+			ctx.fillStyle = 'pink';
+			ctx.strokeStyle = 'pink';
+			let angleShift = yr2rad(today.year);
+			ctx.rotate(angleShift-deg2rad(-76));
+			for (let n=0; n<12; n++) {
+				let angle = n+1;
+				let triad = currentDate.TRIADS[n];
+				drawTextAlongArc(triad, settings.radius, angle*-1);
+			}
+			restore();
+		}
+
 		// draw the Great Year so Far ring
 		const doGYSFRing = settings => {
 			save();
@@ -1433,6 +1474,10 @@
 			shadowColor: "rgba(256, 100, 100, 1)",
 			years: [0, 1833, 3733, 5699, 7732, 9832, 12000, 14168, 16268,
 				18301, 20267, 22167]
+		});
+
+		doConstellationTitles({
+			radius: 370
 		});
 
 		// this year-to-Date arc
