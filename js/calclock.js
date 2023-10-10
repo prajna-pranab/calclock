@@ -5,6 +5,7 @@
  *
  * by Prajna Pranab, Leo 13,517
  *
+ * version 1.8.7: 20 Libra 13520     -- Added Constellation names -- Banglashi
  * version 1.8.6: 23 Aquarius 13520  -- Deekday => Day Name
  * version 1.8.5: 16 Aquarius 13520  -- Aligned quarter/age/season jumps
  * version 1.8.4: 11 Aquarius 13520  -- Added Quarter/Season step size
@@ -46,7 +47,7 @@
  */
 // 'use strict';
 {
-	const VERSION = '1.8.6',
+	const VERSION = '1.8.7',
 			DEG_PER_YR = 360 / 24000,	// fraction of a degree per year discounting precession
 			CIRC = 2 * Math.PI,			// 360deg in radians
 			MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
@@ -788,6 +789,29 @@
 			restore();
 		}
 
+		// draw Text along an arc -- Banglashi
+		function drawTextAlongArc(str, radius, angle) {
+			var len = str.length,
+			  s;
+			save();
+			
+			let centerAngle = len/2 * .032;
+			let rotationAngle = ((2 * Math.PI) / 12);
+			ctx.rotate(rotationAngle * angle - centerAngle);
+			for (var n = 0; n < len; n++) {
+                s = str[n];
+                ctx.rotate(.032);
+                save();
+                ctx.translate(0, -1 * radius);
+                ctx.strokeStyle = '#001138';
+                ctx.lineWidth = 4;
+                ctx.strokeText(s, 0, 0);
+                ctx.fillText(s, 0, 0);
+                restore();
+			}
+			restore();
+		}
+
 		// Specific Drawing Functions --------------------------------------------
 
 		const doGreatYear = settings => {
@@ -882,30 +906,7 @@
 			restore();
 		}
 
-		// draw Text along an arc
-		function drawTextAlongArc(str, radius, angle) {
-			var len = str.length,
-			  s;
-			save();
-			
-			let centerAngle = len/2 * .032;
-			let rotationAngle = ((2 * Math.PI) / 12);
-			ctx.rotate(rotationAngle * angle - centerAngle);
-			for (var n = 0; n < len; n++) {
-                s = str[n];
-                ctx.rotate(.032);
-                save();
-                ctx.translate(0, -1 * radius);
-                ctx.strokeStyle = '#001138';
-                ctx.lineWidth = 4;
-                ctx.strokeText(s, 0, 0);
-                ctx.fillText(s, 0, 0);
-                restore();
-			}
-			restore();
-		}
-
-		// draw the constellations titles
+		// draw the constellations titles -- Banglashi
 		const doConstellationTitles = settings => {
 			save();
 			ctx.font = '18pt Calibri';
