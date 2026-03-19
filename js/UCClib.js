@@ -4,6 +4,7 @@
  *
  * by Prajna
  *
+ * version 1.1.6  29 Pisces♓ 13526 - fixed references undefined variable triad
  * version 1.1.5  29 Pisces♓ 13526 - fixed intercals() calls isLeapYear() with no argument → always returns
  *                                     wrong result on intercalary days
  * version 1.1.4  5 Leo♌ 13521 - Added Cwmraeg triad names
@@ -28,7 +29,7 @@
 var UCCDate = function() {
   
   // constants
-  const VERSION = '1.1.5';
+  const VERSION = '1.1.6';
   const OFFSET = Date.UTC(-11502, 2, 21);  // offset of UCC Epoc from Unix Epoc in milliseconds
   const ONE_DAY = 86400000; // 24 * 60 * 60 * 1000 ms
   const ONE_YEAR = 31536000000; // 365 * 24 * 60 * 60 * 1000 ms
@@ -61,10 +62,10 @@ var UCCDate = function() {
   }
   
   function trDecan(deekDay) {
-    if (__names == 0) return DECANS[triad];
-    if (__names == 1) return HICANS[triad];
-    if (__names == 2) return GREECANS[triad];
-    if (__names == 3) return CWMCANS[triad];
+    if (__names == 0) return DECANS[deekDay];
+    if (__names == 1) return HICANS[deekDay];
+    if (__names == 2) return GREECANS[deekDay];
+    if (__names == 3) return CWMCANS[deekDay];
   }
   
   //****************** Moon phase ******************
