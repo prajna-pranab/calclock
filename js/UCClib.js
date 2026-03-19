@@ -4,6 +4,8 @@
  *
  * by Prajna
  *
+ * version 1.1.5  29 Pisces♓ 13526 - fixed intercals() calls isLeapYear() with no argument → always returns
+ *                                     wrong result on intercalary days
  * version 1.1.4  5 Leo♌ 13521 - Added Cwmraeg triad names
  * version 1.1.3 14 Scorpi0 13520 - Modified jDate() to offset from local time
  * version 1.1.2 14 Scorpi0 13520 - Improved quarter() method code
@@ -26,7 +28,7 @@
 var UCCDate = function() {
   
   // constants
-  const VERSION = '1.1.3';
+  const VERSION = '1.1.5';
   const OFFSET = Date.UTC(-11502, 2, 21);  // offset of UCC Epoc from Unix Epoc in milliseconds
   const ONE_DAY = 86400000; // 24 * 60 * 60 * 1000 ms
   const ONE_YEAR = 31536000000; // 365 * 24 * 60 * 60 * 1000 ms
@@ -187,12 +189,12 @@ var UCCDate = function() {
     if (date.doy < 2)
       return date.doy;
     else if (date.doy < 93)
-      return isLeapYear() ? 3 : 2;
+      return isLeapYear(date.year) ? 3 : 2;
     else if (date.doy < 184)
-      return isLeapYear() ? 4 : 3;
+      return isLeapYear(date.year) ? 4 : 3;
     else if (date.doy < 275)
-      return isLeapYear() ? 5 : 4;
-    return isLeapYear() ? 6 : 5;
+      return isLeapYear(date.year) ? 5 : 4;
+    return isLeapYear(date.year) ? 6 : 5;
   }
    
   // return the day symbol if this is a intercalary day
