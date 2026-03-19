@@ -5,6 +5,9 @@
  *
  * by Prajna Pranab, Leo 13,517
  *
+ * version 1.8.8: 29 Pisces♓ 13526	 -- fixed dateHead option written to sandhis option;
+ *										fixed removeEventListener for doJump
+ *										fixed var decs in orbit() and restored strict
  * version 1.8.7: 20 Libra 13520     -- Added Constellation names -- Banglashi
  * version 1.8.6: 23 Aquarius 13520  -- Deekday => Day Name
  * version 1.8.5: 16 Aquarius 13520  -- Aligned quarter/age/season jumps
@@ -45,9 +48,9 @@
  *
  * Developed as a Progressive Web App/Single Page Web Application
  */
-// 'use strict';
+'use strict';
 {
-	const VERSION = '1.8.7',
+	const VERSION = '1.8.8',
 			DEG_PER_YR = 360 / 24000,	// fraction of a degree per year discounting precession
 			CIRC = 2 * Math.PI,			// 360deg in radians
 			MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
@@ -101,7 +104,7 @@
 		Id('ctl_yearStart').checked = options.yearStart;
 		Id('ctl_trigram').checked = options.trigram;
 		Id('ctl_data').checked = options.dataTables;
-		Id('ctl_dateHead').checked = options.sandhis;
+		Id('ctl_dateHead').checked = options.dateHead;
 		Id('ctl_moon').checked = options.moon;
 		Id('ctl_dayMkr').checked = options.dayMkr;
 		Id('ctl_dayNo').checked = options.dayNo;
@@ -417,7 +420,7 @@
 				this.setBack.removeEventListener('click', goBack);
 				this.setFwd.removeEventListener('click', goFwd);
 				this.setStep.removeEventListener('change', refresh);
-				this.setJump.addEventListener('change', doJump);
+				this.setJump.removeEventListener('change', doJump);
 				this.setLang.removeEventListener('change', refresh);
 				this.setFmt.removeEventListener('change', refresh);
 			}
@@ -661,8 +664,11 @@
 		const orbit = (year, period, eccentricity) => {
 			 // M is the position of a body moving in a uniform circle
 			 // at a constant rate
-			let u = M = 2.0 * Math.PI * year/period;
-			let n = new_u = 0, limit = 10;
+			let M = 2.0 * Math.PI * year/period,
+			    u = M,
+			    new_u = 0,
+			    n = 0,
+			    limit = 10;
 			// calculate the difference between a circular and elliptical orbit
 			// for this point in the orbit
 			while (n++<limit) {
