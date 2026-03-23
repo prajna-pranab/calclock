@@ -1,4 +1,4 @@
-![UCC Application Image](blob/mainassets/images/ucc512ico.png)
+![UCC Application Image](assets/images/ucc512ico.png)
 
 # calclock
 webapp to display UCC dates (see https://ucc.zone) and to convert between UCC and Gregorian calendar dates.
