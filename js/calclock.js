@@ -5,6 +5,7 @@
  *
  * by Prajna Pranab, Leo 13,517
  *
+ * version 1.8.9: 2 Aries♈ 13527	 -- 13527 Release;
  * version 1.8.8: 29 Pisces♓ 13526	 -- fixed dateHead option written to sandhis option;
  *										fixed removeEventListener for doJump
  *										fixed var decs in orbit() and restored strict
@@ -50,7 +51,7 @@
  */
 'use strict';
 {
-	const VERSION = '1.8.8',
+	const VERSION = '1.8.9',
 			DEG_PER_YR = 360 / 24000,	// fraction of a degree per year discounting precession
 			CIRC = 2 * Math.PI,			// 360deg in radians
 			MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
