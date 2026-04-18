@@ -2,12 +2,12 @@
 	Service Worker for CalClock - caches all the app content so the app will run
 	offline and be installable as a progressive web app.
 	
-	Version 0.2.1 by Prajna Pranab
+	by Swami Prajna Pranab with assistance from Claude AI
 */
 
 // Cached version of CalClock
-const CACHED_VERSION = '1.8.3';
-const CURR_CACHE = 'calclock-v2';
+const CACHED_VERSION = '1.2.0';
+const CURR_CACHE = 'calclock';
 
 // find the absolute root pathname
 let pathElms = location.pathname.split('/');
@@ -16,8 +16,8 @@ let root = location.origin + '/' + pathElms.slice(0, -1).join('/');
 // files to cache
 let cacheFiles = [
 	'index.html', 'manifest.json', 'offline.html', 'help.html',
-	'js/calclock.js', 'js/timerlib.js', 'js/UCClib.js', 'js/UCCUtils.js',
-	'css/calclock.css', 'css/normalize.css',
+	'js/calclock.js', 'js/timerlib.js', 'js/UCClib.js',
+	'css/calclock.css',
 	'asset/images/earth.png', 'asset/images/spinner.svg', 'asset/images/zodiac.svg',
 	'asset/images/ucc16ico.png', 'asset/images/ucc32ico.png', 'asset/images/ucc64ico.png',
 	'asset/images/ucc128ico.png',	'asset/images/ucc144ico.png', 'asset/images/ucc192ico.png',
@@ -25,7 +25,7 @@ let cacheFiles = [
 ];
 
 // add root path to cacheFiles
-for (file of cacheFiles) file = root + file;
+cacheFiles = cacheFiles.map(file => root + '/' + file);
 
 // install the worker
 self.addEventListener('install', ev => {
@@ -61,26 +61,25 @@ self.addEventListener('activate', ev => {
 	console.log('worker activated.');
 });
 
+// add event listener to skip waiting to update
+self.addEventListener('message', ev => {
+    if (ev.data === 'SKIP_WAITING') self.skipWaiting();
+});
+
 // handle fetch requests
 self.addEventListener('fetch', ev => {
-	ev.respondWith(
-		// look for it in our cache
-		caches.match(ev.request)
-		.then( resp => {
-			// if not in the cache try the network
-			return resp || fetch(ev.request)
-			.then( response => {
-				// if we got it from the network cache it and return it
-				return caches.open(CURR_CACHE)
-				.then( cache => {
-					cache.put(ev.request, response.clone());
-					return response;
-				});
-			});
-		}).catch( (ev) => {
-			// must be offline or the asset doesn't exist
-			console.log(`fetch failed for ${ev.request.url}`);
-			return caches.match('offline.html');
-		})
-	);
+    ev.respondWith(
+        fetch(ev.request)
+        .then(response => {
+            const clone = response.clone();
+            caches.open(CURR_CACHE).then(cache => {
+                cache.put(ev.request, clone);
+            });
+            return response;
+        })
+        .catch(() => {
+            return caches.match(ev.request)
+                .then(cached => cached || caches.match('offline.html'));
+        })
+    );
 });

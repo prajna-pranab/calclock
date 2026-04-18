@@ -38,6 +38,12 @@ select, option, optgroup, button {
 		rgba(50, 50, 255, 0.5)
 	);
 }
+select:disabled, option:disabled, optgroup:disabled, button:disabled {
+	color: gray;
+}
+button:active {
+	color: red;
+}
 label { cursor: pointer; }
 .chkbox input {
 	border: 0;
@@ -223,7 +229,7 @@ a {
 	border-radius: 0.5rem;
 	transition: width .1s ease-out;
 	overflow: hidden;
-	height: 20rem;
+	height: 22rem;
 }
 /* remove paragraph top margin
 #controls p {
@@ -246,7 +252,7 @@ a {
 	visibility: visible;
 }
 #controls > div > div {
-	max-height: 19rem;
+	max-height: 20.5rem;
 	padding-top: .5rem;
 	display: flex;
 	overflow: hidden;
@@ -305,7 +311,7 @@ a {
 	padding: 0;
 	font-size: .8rem;
 	width: 95%;
-	height: 20rem;
+	height: 20.5rem;
 	line-height: .9rem;
 }
 /* About tab paragraphs */

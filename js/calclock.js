@@ -3,11 +3,20 @@
  *
  * Animate the calendar if required, set any UCC or Gregorian date.
  *
- * by Prajna Pranab, Leo 13,517
+ * by Swami Prajna Pranab with input from Litmus A Freeman, code review and assistance from Claude AI
+ * 1st version: Leo 13,517
  *
+ * version 1.2.0: 27 Aries♈ 13527	 -- Refactored UCCLib.js to ES6;
+ 										Added Cwmraeg day names; Added Geocentric day order;
+ 										Fixed various bugs Claude identified;
+ 										Tidied About description and README.md;
+ 										added label to update button;
+ 										Fixed on-demand Update check;
+ 										Refactored PWA updates to be more robust;
+ 										Fixed depreciated onUnload event handling.
  * version 1.8.9: 2 Aries♈ 13527	 -- 13527 Release;
  * version 1.8.8: 29 Pisces♓ 13526	 -- fixed dateHead option written to sandhis option;
- *										fixed removeEventListener for doJump
+ *										fixed removeEventListener for doJump;
  *										fixed var decs in orbit() and restored strict
  * version 1.8.7: 20 Libra 13520     -- Added Constellation names -- Banglashi
  * version 1.8.6: 23 Aquarius 13520  -- Deekday => Day Name
@@ -51,7 +60,7 @@
  */
 'use strict';
 {
-	const VERSION = '1.8.9',
+	const VERSION = '1.2.0',
 			DEG_PER_YR = 360 / 24000,	// fraction of a degree per year discounting precession
 			CIRC = 2 * Math.PI,			// 360deg in radians
 			MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
@@ -75,7 +84,9 @@
 			reverse: Id('ctl_reverse').checked,
 			yearStart: Id('ctl_yearStart').checked,
 			trigram: Id('ctl_trigram').checked,
-			dataTables: Id('ctl_data').checked,
+			dataDay: Id('ctl_dataDay').checked,
+			dataYear: Id('ctl_dataYear').checked,
+			dataGY: Id('ctl_dataGY').checked,
 			dateHead: Id('ctl_dateHead').checked,
 			moon: Id('ctl_moon').checked,
 			dayMkr: Id('ctl_dayMkr').checked,
@@ -89,6 +100,7 @@
 			gyRing: Id('ctl_gyRing').checked,
 			sandhis: Id('ctl_sandhis').checked,
 			vrp: Id('ctl_vrp').checked,
+			helio: Id('ctl_helio').checked,
 			constMarkers: false,
 			installed: isInstalled
 		}
@@ -104,7 +116,9 @@
 		Id('ctl_reverse').checked = options.reverse;
 		Id('ctl_yearStart').checked = options.yearStart;
 		Id('ctl_trigram').checked = options.trigram;
-		Id('ctl_data').checked = options.dataTables;
+		Id('ctl_dataDay').checked = options.dataDay;
+		Id('ctl_dataYear').checked = options.dataYear;
+		Id('ctl_dataGY').checked = options.dataGY;
 		Id('ctl_dateHead').checked = options.dateHead;
 		Id('ctl_moon').checked = options.moon;
 		Id('ctl_dayMkr').checked = options.dayMkr;
@@ -118,6 +132,7 @@
 		Id('ctl_gyRing').checked = options.gyRing;
 		Id('ctl_sandhis').checked = options.sandhis;
 		Id('ctl_vrp').checked = options.vrp;
+		Id('ctl_helio').checked = options.helio;
 		isInstalled = options.installed;
 	}
 
@@ -293,6 +308,8 @@
 	const eventHandlers = () => {
 		// on page load add handlers
 		window.addEventListener('load', () => {
+			// reconfigure the interface to match the options
+			setOptions();
 			// activate the menu listener
 			menuHandler.listen();
 			// enable click on UCC Date to copy to clipboard
@@ -305,8 +322,9 @@
 				document.body.removeChild(ta);
 			});
 		}, {capture: true, once: true, passive: true});
-		// on page unload save options
-		window.addEventListener('unload', () => {
+		// on page hide or unload save options
+		const terminationEvent = 'onpagehide' in self ? 'pagehide' : 'unload';
+		window.addEventListener(terminationEvent, (event) => {
 			localStorage.calclock = JSON.stringify(currOptions());
 		}, false);
 	}
@@ -343,7 +361,9 @@
 		setRev: Id('ctl_reverse'),
 		setYear: Id('ctl_yearStart'),
 		setTrigram: Id('ctl_trigram'),
-		setDataTables: Id('ctl_data'),
+		setDataDay: Id('ctl_dataDay'),
+		setDataYear: Id('ctl_dataYear'),
+		setDataGY: Id('ctl_dataGY'),
 		setDateHead: Id('ctl_dateHead'),
 		setMoon: Id('ctl_moon'),
 		setDayMkr: Id('ctl_dayMkr'),
@@ -357,6 +377,7 @@
 		setGyRing: Id('ctl_gyRing'),
 		setSandhis: Id('ctl_sandhis'),
 		setVrp: Id('ctl_vrp'),
+		setHelio: Id('ctl_helio'),
 		iconShow() {
 			if (options.trigram)
 				this.trigram.classList.remove('hidden');
@@ -435,7 +456,9 @@
 			headers[2].removeEventListener('click', this.openShow);
 			if (headers[2].classList.contains('selected')) {
 				this.setTrigram.removeEventListener('change', refresh);
-				this.setDataTables.removeEventListener('change', refresh);
+				this.setDataDay.removeEventListener('change', refresh);
+				this.setDataYear.removeEventListener('change', refresh);
+				this.setDataGY.removeEventListener('change', refresh);
 				this.setDateHead.removeEventListener('change', refresh);
 				this.setMoon.removeEventListener('change', refresh);
 				this.setDayMkr.removeEventListener('change', refresh);
@@ -449,6 +472,7 @@
 				this.setGyRing.removeEventListener('change', refresh);
 				this.setSandhis.removeEventListener('change', refresh);
 				this.setVrp.removeEventListener('change', refresh);
+				this.setHelio.removeEventListener('change', refresh);
 			}
 			// about tab
 			headers[3].removeEventListener('click', this.openAbout);
@@ -478,7 +502,9 @@
 			// show tab
 			if (headers[2].classList.contains('selected')) {
 				this.setTrigram.addEventListener('change', refresh);
-				this.setDataTables.addEventListener('change', refresh);
+				this.setDataDay.addEventListener('change', refresh);
+				this.setDataYear.addEventListener('change', refresh);
+				this.setDataGY.addEventListener('change', refresh);
 				this.setDateHead.addEventListener('change', refresh);
 				this.setMoon.addEventListener('change', refresh);
 				this.setDayMkr.addEventListener('change', refresh);
@@ -492,6 +518,7 @@
 				this.setGyRing.addEventListener('change', refresh);
 				this.setSandhis.addEventListener('change', refresh);
 				this.setVrp.addEventListener('change', refresh);
+				this.setHelio.addEventListener('change', refresh);
 			} else headers[2].addEventListener('click', this.openShow.bind(this));
 			// about tab
 			if (!headers[3].classList.contains('selected'))
@@ -1319,7 +1346,8 @@
 		// update the options and checkbox titles
 		options=currOptions();
 
-		// set the language for deekday/triad names
+		// set the day name order and language for deekday/triad names
+		today.helio = options.helio;
 		today.names = options.language;
 		currentDate = today;  // so we can animate from this date
 
@@ -1362,8 +1390,8 @@
 			Id('dateHeading').style.display = 'block';
 		} else Id('dateHeading').style.display = 'none';
 		
-		// draw the upper right data table
-		if (options.dataTables) {
+		// draw the DAY data table
+		if (options.dataDay) {
 			let weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 			let deekDays = ["Ones", "Twos", "Threes", "Fours", "Fives", "Sixes", 
 				"Sevens", "Eights", "Nines", "Tens"];
@@ -1377,8 +1405,8 @@
 			Id('dataTr').style.display = 'block';
 		} else Id('dataTr').style.display = 'none';
 
-		// draw the lower right data table
-		if (options.dataTables) {
+		// draw the YEAR data table
+		if (options.dataYear) {
 			Id('dataBr').innerHTML = `Quarter: ${today.quarter}<br>
 				Triad No: ${today.triad}<br>
 				Decan No: ${today.deekNumber}<br>
@@ -1389,8 +1417,8 @@
 			Id('dataBr').style.display = 'block';
 		} else Id('dataBr').style.display = 'none';
 
-		// draw the lower left data table
-		if (options.dataTables) {
+		// draw the GREAT YEAR data table
+		if (options.dataGY) {
 			Id('dataBl').innerHTML = `Great Year No: 187500<br>
 				Year No: ${today.year} of 24,000<br>
 				${today.zodiac}<br>
@@ -1887,24 +1915,71 @@
 	// MAIN ---------------------------------------------------------------------
 	// find out if we're running as an app or standalone
 	const hosted = ['http:', 'https:'].includes(location.protocol);
-	// update options from local storage if they've been saved
+	// set default options
+	const defaultOptions = () => ({
+	    language: 0, stepDays: 10, jump: 0, dateFmt: 1,
+	    animate: false, reverse: false, yearStart: false,
+	    trigram: true, dataDay: true, dataYear: true, dataGY: true,
+	    dateHead: true, moon: false, dayMkr: true, dayNo: true,
+	    deekSymb: true, ysf: false, sidRing: true, gysf: true,
+	    yearMkr: true, yearNum: true, gyRing: true, sandhis: true,
+	    vrp: true, helio: false, constMarkers: false, installed: false
+	});
+		// update options from local storage if they've been saved
 	let options = (localStorage.calclock) ?
-		JSON.parse(localStorage.calclock) : currOptions();
-	// reconfigure the interface to match the options
-	setOptions();
+	    JSON.parse(localStorage.calclock) : defaultOptions();
 	// register our service worker if running as app and add
 	// beforeinstallprompt listener
 	if (hosted && 'serviceWorker' in navigator) {
 		navigator.serviceWorker.register('worker.js').then(reg => {
-			// handle Update button clicks
-			Id('btnUpdate').addEventListener('click', ev => {
-				reg.update();
-				location.reload(true);
-				// window.caches.delete('calclock-v2').then(deleted => {location.reload(true);});
-			})
-		});
+
+	        // When a new SW finishes installing (enters 'waiting'), send it
+	        // SKIP_WAITING so it activates immediately on reload.
+	        const awaitNewWorker = (worker) => {
+	            worker.addEventListener('statechange', ev => {
+	                if (ev.target.state === 'installed')
+	                    // New worker is ready and waiting — tell it to take over
+	                    worker.postMessage('SKIP_WAITING');
+	            });
+	        };
+
+	        // Once the new worker takes control, reload cleanly.
+		    // but only reload if a worker was already controlling the page,
+		    // i.e. this is a genuine update, not the first install.
+		    let wasControlled = !!navigator.serviceWorker.controller;
+		    navigator.serviceWorker.addEventListener('controllerchange', () => {
+		        if (wasControlled) location.reload();
+		    });
+
+	        // Handle Update button clicks
+	        Id('btnUpdate').addEventListener('click', ev => {
+	            // If there's already a waiting worker (update already downloaded),
+	            // just activate it immediately.
+	            if (reg.waiting) {
+	                reg.waiting.postMessage('SKIP_WAITING');
+	                return;
+	            }
+	            // Otherwise disable the update button and fetch the update, then watch for the new worker.
+	           	Id('btnUpdate').disabled = true;
+	            reg.update().then(() => {
+	                if (reg.installing)
+	                	// New worker is downloading/installing, watch for it to finish
+	                	awaitNewWorker(reg.installing);
+	                else if (reg.waiting)
+	                	// Finished installing while we were checking, activate it
+	                	reg.waiting.postMessage('SKIP_WAITING');
+	                else
+	                	// Nothing new — re-enable the button
+						Id('btnUpdate').disabled = false;
+	            }).catch(() => {
+	            	// Update check failed (e.g. offline) — re-enable the button
+	            	Id('btnUpdate').disabled = false;
+	            });
+	        });
+	    });
+
 		if (!options.installed) addToHome();
-	}
+	};
 	
 	// get the drawing context
 	let ctx = Id('clockCanvas').getContext("2d");
