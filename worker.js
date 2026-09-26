@@ -6,7 +6,7 @@
 */
 
 // Cached version of CalClock
-const CACHED_VERSION = '1.2.0';
+const CACHED_VERSION = '1.2.1';
 const CURR_CACHE = 'calclock';
 
 // find the absolute root pathname
@@ -18,7 +18,7 @@ let cacheFiles = [
 	'index.html', 'manifest.json', 'offline.html', 'help.html',
 	'js/calclock.js', 'js/timerlib.js', 'js/UCClib.js',
 	'css/calclock.css',
-	'asset/images/earth.png', 'asset/images/spinner.svg', 'asset/images/zodiac.svg',
+	'asset/images/earth.png', 'asset/images/spinner.svg', 'asset/images/zodiac.png',
 	'asset/images/ucc16ico.png', 'asset/images/ucc32ico.png', 'asset/images/ucc64ico.png',
 	'asset/images/ucc128ico.png',	'asset/images/ucc144ico.png', 'asset/images/ucc192ico.png',
 	'asset/images/ucc512ico.png', 'asset/images/favicon.ico'

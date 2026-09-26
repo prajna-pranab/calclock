@@ -60,7 +60,7 @@
  */
 'use strict';
 {
-	const VERSION = '1.2.0',
+	const VERSION = '1.2.1',
 			DEG_PER_YR = 360 / 24000,	// fraction of a degree per year discounting precession
 			CIRC = 2 * Math.PI,			// 360deg in radians
 			MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
@@ -1988,7 +1988,7 @@
 	// once they're loaded imagesReady() will call the main drawing function
 	let zodiac = new Image();
 	zodiac.onload = imagesReady;
-	zodiac.src = 'asset/images/zodiac.svg';
+	zodiac.src = 'asset/images/zodiac.png';
 	let earth = new Image();
 	earth.onload = imagesReady;
 	earth.src = 'asset/images/earth.png';
