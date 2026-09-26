@@ -6,6 +6,13 @@
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and assistance from Claude AI
  * 1st version: Leo 13,517
  *
+ * version 1.2.1: 7 Libra♎ 13527	 -- zodiac background SVG => PNG
+ 										(1600², 809KB — same art, faster first load);
+ 										cut VERSION + worker cache label to 1.2.1;
+ 										annotated the setHeading(12000) reset (label anchor +
+ 										mode-safe full turn); Kepler maths independently verified
+ 										(boundaries within 15y, implied rates 22k/26k/25,790 vs
+ 										measured 25,772).
  * version 1.2.0: 27 Aries♈ 13527	 -- Refactored UCCLib.js to ES6;
  										Added Cwmraeg day names; Added Geocentric day order;
  										Fixed various bugs Claude identified;
@@ -1498,6 +1505,17 @@
 		});
 
 		// reset rotation to draw constellations etc.
+		// NOT a no-op — setHeading() both rotates the ctx AND stores the
+		// module-level `heading` that drawText() counter-rotates labels
+		// with; ctx.save/restore does NOT restore that variable.
+		// Year 12000 is the one anchor where wobble and VRP agree exactly
+		// (E = M = 180°), so these two calls net a full turn (ctx ≡ 0) in
+		// EITHER mode while leaving heading = -180° — which is what the
+		// label maths needs here (orientation = ctxRot + deg2rad(180)
+		// - heading ≡ 0). Zeroing `heading` instead would flip the labels.
+		// Cleaner future shape: make save()/restore() push+pop `heading`
+		// too, and this reset becomes unnecessary.
+		// Noted 7 Libra 13527 (27 Sep 2026), Setu & Prajna.
 		setHeading(12000);
 
 		// draw constellation background
