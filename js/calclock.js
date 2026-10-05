@@ -16,6 +16,11 @@
  										deek symbol + greek/hind getters now follow the helio/geo
  										order like the day name (1.2.1 item 1: symbols follow the
  										name; adds DSYMBOLS_GEO table, 790-pair node test PASS).
+ 										Heading days option (item 5, specced 21-Sep): Show-tab
+ 										toggle "Heading days" (default on, title "Show day name in
+ 										date heading.") — heading = day name then date in whichever
+ 										format is selected; verified across all 5 date formats,
+ 										toggle off/on, and pre-existing saved state (undefined = on).
  * version 1.2.0: 27 Aries♈ 13527	 -- Refactored UCCLib.js to ES6;
  										Added Cwmraeg day names; Added Geocentric day order;
  										Fixed various bugs Claude identified;
@@ -98,6 +103,7 @@
 			dataYear: Id('ctl_dataYear').checked,
 			dataGY: Id('ctl_dataGY').checked,
 			dateHead: Id('ctl_dateHead').checked,
+			headingDays: Id('ctl_headingDays').checked,
 			moon: Id('ctl_moon').checked,
 			dayMkr: Id('ctl_dayMkr').checked,
 			dayNo: Id('ctl_dayNo').checked,
@@ -130,6 +136,7 @@
 		Id('ctl_dataYear').checked = options.dataYear;
 		Id('ctl_dataGY').checked = options.dataGY;
 		Id('ctl_dateHead').checked = options.dateHead;
+		Id('ctl_headingDays').checked = options.headingDays !== false;
 		Id('ctl_moon').checked = options.moon;
 		Id('ctl_dayMkr').checked = options.dayMkr;
 		Id('ctl_dayNo').checked = options.dayNo;
@@ -375,6 +382,7 @@
 		setDataYear: Id('ctl_dataYear'),
 		setDataGY: Id('ctl_dataGY'),
 		setDateHead: Id('ctl_dateHead'),
+		setHeadingDays: Id('ctl_headingDays'),
 		setMoon: Id('ctl_moon'),
 		setDayMkr: Id('ctl_dayMkr'),
 		setDayNo: Id('ctl_dayNo'),
@@ -470,6 +478,7 @@
 				this.setDataYear.removeEventListener('change', refresh);
 				this.setDataGY.removeEventListener('change', refresh);
 				this.setDateHead.removeEventListener('change', refresh);
+				this.setHeadingDays.removeEventListener('change', refresh);
 				this.setMoon.removeEventListener('change', refresh);
 				this.setDayMkr.removeEventListener('change', refresh);
 				this.setDayNo.removeEventListener('change', refresh);
@@ -516,6 +525,7 @@
 				this.setDataYear.addEventListener('change', refresh);
 				this.setDataGY.addEventListener('change', refresh);
 				this.setDateHead.addEventListener('change', refresh);
+				this.setHeadingDays.addEventListener('change', refresh);
 				this.setMoon.addEventListener('change', refresh);
 				this.setDayMkr.addEventListener('change', refresh);
 				this.setDayNo.addEventListener('change', refresh);
@@ -1396,7 +1406,9 @@
 		// write today's UCC Date
 		if (options.dateHead) {
 			let dateStrs = [today.full, today.long, today.medium, today.short, today.sortable];
-			Id('dateHeading').innerHTML = dateStrs[options.dateFmt];
+			Id('dateHeading').innerHTML = (options.headingDays !== false && today.deekDay)
+				? `${today.deekDay} · ${dateStrs[options.dateFmt]}`
+				: dateStrs[options.dateFmt];
 			Id('dateHeading').style.display = 'block';
 		} else Id('dateHeading').style.display = 'none';
 		
@@ -1942,6 +1954,7 @@
 	    animate: false, reverse: false, yearStart: false,
 	    trigram: true, dataDay: true, dataYear: true, dataGY: true,
 	    dateHead: true, moon: false, dayMkr: true, dayNo: true,
+	    headingDays: true,
 	    deekSymb: true, ysf: false, sidRing: true, gysf: true,
 	    yearMkr: true, yearNum: true, gyRing: true, sandhis: true,
 	    vrp: true, helio: false, constMarkers: false, installed: false
