@@ -94,8 +94,15 @@ class UCCDate {
     ];
   }
 
+  // decan day symbols in heliocentric day order (pairs with DECAN_NAMES_HELIO)
   static get DSYMBOLS() {
     return ['\u2646','\u2609','\u263F','\u2640','\u2295','\u2642','\u26B3','\u2643','\u2644','\u2645'];
+  }
+
+  // decan day symbols in geocentric day order (pairs with DECAN_NAMES_GEO)
+  // index 0 = day 10 (Pluto), index 1 = day 1 (Moon), ... index 9 = day 9 (Neptune)
+  static get DSYMBOLS_GEO() {
+    return ['\u2647','\u263D','\u263F','\u2640','\u2609','\u2642','\u2643','\u2644','\u2645','\u2646'];
   }
 
   static get MOONS() {
@@ -482,10 +489,11 @@ class UCCDate {
     return this._decanName(this._day);
   }
 
-  // decan day symbol — independent of helio/geo order
+  // decan day symbol — follows the day name's order (helio/geo)
   get deekSymbol() {
     if (this._triad === 0 || this._day === 0) return '';
-    return UCCDate.DSYMBOLS[(this._day + 10) % 10];
+    const table = this._helio ? UCCDate.DSYMBOLS : UCCDate.DSYMBOLS_GEO;
+    return table[(this._day + 10) % 10];
   }
 
   // decan number (1–36)
@@ -494,15 +502,18 @@ class UCCDate {
     return ((this._triad - 1) * 3) + Math.floor((this._day - 1) / 10) + 1;
   }
 
-  // explicit language-specific decan day names (always available regardless of _names setting)
+  // explicit language-specific decan day names (language fixed regardless of
+  // _names; order follows helio/geo like deekDay)
   get greekDay() {
     if (this._triad === 0 || this._day === 0) return '';
-    return UCCDate.DECAN_NAMES_GEO[2][(this._day + 10) % 10];
+    const table = this._helio ? UCCDate.DECAN_NAMES_HELIO[2] : UCCDate.DECAN_NAMES_GEO[2];
+    return table[(this._day + 10) % 10];
   }
 
   get hindDay() {
     if (this._triad === 0 || this._day === 0) return '';
-    return UCCDate.DECAN_NAMES_GEO[1][(this._day + 10) % 10];
+    const table = this._helio ? UCCDate.DECAN_NAMES_HELIO[1] : UCCDate.DECAN_NAMES_GEO[1];
+    return table[(this._day + 10) % 10];
   }
 
   // festival properties
@@ -553,6 +564,7 @@ class UCCDate {
   get HICANS()    { return UCCDate.DECAN_NAMES_GEO[1]; }
   get GREECANS()  { return UCCDate.DECAN_NAMES_GEO[2]; }
   get DSYMBOLS()  { return UCCDate.DSYMBOLS; }
+  get DSYMBOLS_GEO() { return UCCDate.DSYMBOLS_GEO; }
   get MOONS()     { return UCCDate.MOONS; }
   get MSYMBOLS()  { return UCCDate.MSYMBOLS; }
 

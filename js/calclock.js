@@ -13,6 +13,9 @@
  										mode-safe full turn); Kepler maths independently verified
  										(boundaries within 15y, implied rates 22k/26k/25,790 vs
  										measured 25,772).
+ 										deek symbol + greek/hind getters now follow the helio/geo
+ 										order like the day name (1.2.1 item 1: symbols follow the
+ 										name; adds DSYMBOLS_GEO table, 790-pair node test PASS).
  * version 1.2.0: 27 Aries♈ 13527	 -- Refactored UCCLib.js to ES6;
  										Added Cwmraeg day names; Added Geocentric day order;
  										Fixed various bugs Claude identified;
