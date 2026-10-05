@@ -31,6 +31,10 @@
 				the Universal Celestial Çynchronometer.. Sorry.</p>
 		</canvas>
 		<div id="trigram"><div></div><div></div><div></div></div>
+		<div id="skipBtns" title="Skip back and forward — feature request from Andy Zen Pagan (Holistic Radio) and Tweak">
+			<button id="skipBack" type="button" aria-label="Skip back">&minus;</button>
+			<button id="skipFwd" type="button" aria-label="Skip forward">+</button>
+		</div>
 		<div id='dateHeading'></div>
 		<div id="dataTr"></div>
 		<div id="dataBl"></div>
@@ -225,6 +229,13 @@
 							<span class="cbValue"></span>
 						</span>
 						Heading days
+					</label><br>
+					<label title="Show the skip +/- buttons?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_skipBtns' checked>
+							<span class="cbValue"></span>
+						</span>
+						Skip buttons
 					</label><br>
 					<label title="Show Moon?">
 						<span class="chkbox">

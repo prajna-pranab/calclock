@@ -24,6 +24,11 @@
  										Mid-decan numbers of the fixed signs (5, 14, 23, 32) drawn
  										yellow (item 12); today's spotlight still overrides. Vision-
  										verified: four gold, general ring white.
+ 										Skip +/- buttons below the menu button (item 13; feature
+ 										request: Andy Zen Pagan, Holistic Radio, and Tweak): step
+ 										controls honouring the step setting, Show-tab "Skip buttons"
+ 										toggle (default on), animate-safe; set half a button height
+ 										below the bars at his QC; click + vision verified.
  * version 1.2.0: 27 Aries♈ 13527	 -- Refactored UCCLib.js to ES6;
  										Added Cwmraeg day names; Added Geocentric day order;
  										Fixed various bugs Claude identified;
@@ -107,6 +112,7 @@
 			dataGY: Id('ctl_dataGY').checked,
 			dateHead: Id('ctl_dateHead').checked,
 			headingDays: Id('ctl_headingDays').checked,
+			skipBtns: Id('ctl_skipBtns').checked,
 			moon: Id('ctl_moon').checked,
 			dayMkr: Id('ctl_dayMkr').checked,
 			dayNo: Id('ctl_dayNo').checked,
@@ -140,6 +146,7 @@
 		Id('ctl_dataGY').checked = options.dataGY;
 		Id('ctl_dateHead').checked = options.dateHead;
 		Id('ctl_headingDays').checked = options.headingDays !== false;
+		Id('ctl_skipBtns').checked = options.skipBtns !== false;
 		Id('ctl_moon').checked = options.moon;
 		Id('ctl_dayMkr').checked = options.dayMkr;
 		Id('ctl_dayNo').checked = options.dayNo;
@@ -386,6 +393,7 @@
 		setDataGY: Id('ctl_dataGY'),
 		setDateHead: Id('ctl_dateHead'),
 		setHeadingDays: Id('ctl_headingDays'),
+		setSkipBtns: Id('ctl_skipBtns'),
 		setMoon: Id('ctl_moon'),
 		setDayMkr: Id('ctl_dayMkr'),
 		setDayNo: Id('ctl_dayNo'),
@@ -482,6 +490,7 @@
 				this.setDataGY.removeEventListener('change', refresh);
 				this.setDateHead.removeEventListener('change', refresh);
 				this.setHeadingDays.removeEventListener('change', refresh);
+				this.setSkipBtns.removeEventListener('change', refresh);
 				this.setMoon.removeEventListener('change', refresh);
 				this.setDayMkr.removeEventListener('change', refresh);
 				this.setDayNo.removeEventListener('change', refresh);
@@ -529,6 +538,7 @@
 				this.setDataGY.addEventListener('change', refresh);
 				this.setDateHead.addEventListener('change', refresh);
 				this.setHeadingDays.addEventListener('change', refresh);
+				this.setSkipBtns.addEventListener('change', refresh);
 				this.setMoon.addEventListener('change', refresh);
 				this.setDayMkr.addEventListener('change', refresh);
 				this.setDayNo.addEventListener('change', refresh);
@@ -1417,6 +1427,8 @@
 			Id('dateHeading').style.display = 'block';
 		} else Id('dateHeading').style.display = 'none';
 		
+				Id('skipBtns').style.display = options.skipBtns !== false ? 'flex' : 'none';
+		
 		// draw the DAY data table
 		if (options.dataDay) {
 			let weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -1967,6 +1979,7 @@
 	    trigram: true, dataDay: true, dataYear: true, dataGY: true,
 	    dateHead: true, moon: false, dayMkr: true, dayNo: true,
 	    headingDays: true,
+	    skipBtns: true,
 	    deekSymb: true, ysf: false, sidRing: true, gysf: true,
 	    yearMkr: true, yearNum: true, gyRing: true, sandhis: true,
 	    vrp: true, helio: false, constMarkers: false, installed: false
@@ -2062,5 +2075,8 @@
 	};
 
 	// set up event handlers
+		// skip +/- buttons (feature request: Andy Zen Pagan, Holistic Radio; Tweak)
+		Id('skipBack').addEventListener('click', goBack);
+		Id('skipFwd').addEventListener('click', goFwd);
 	eventHandlers();
 }
