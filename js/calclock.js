@@ -21,6 +21,9 @@
  										date heading.") — heading = day name then date in whichever
  										format is selected; verified across all 5 date formats,
  										toggle off/on, and pre-existing saved state (undefined = on).
+ 										Mid-decan numbers of the fixed signs (5, 14, 23, 32) drawn
+ 										yellow (item 12); today's spotlight still overrides. Vision-
+ 										verified: four gold, general ring white.
  * version 1.2.0: 27 Aries♈ 13527	 -- Refactored UCCLib.js to ES6;
  										Added Cwmraeg day names; Added Geocentric day order;
  										Fixed various bugs Claude identified;
@@ -1194,6 +1197,8 @@
 				ctx.translate(settings.radius, 0);
 				// style the text
 				setStyles(settings.normal);
+				// fixed-sign mid-decans (5, 14, 23, 32): yellow (item 12)
+				if ([5, 14, 23, 32].includes(n)) setStyles(settings.fixedMid);
 				// spotlight the current deek
 				if (today.deekNumber == n && today.day != 0) {
 					spotLight(settings.spotLight);
@@ -1779,6 +1784,13 @@
 				shadowColor: "rgba(255, 255, 0, 1)",
 				fontSize: 18,
 				fillStyle: 'cyan'
+			},
+			fixedMid: {
+				shadowOffsetX: 3,
+				shadowOffsetY: 3,
+				shadowBlur: 4,
+				shadowColor: "rgba(255, 255, 0, 1)",
+				fillStyle: 'yellow'
 			},
 			spotLight: {
 				radius: 20,
