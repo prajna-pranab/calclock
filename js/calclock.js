@@ -1430,9 +1430,10 @@
 				: dateStrs[options.dateFmt];
 			Id('dateHeading').style.display = 'block';
 		} else Id('dateHeading').style.display = 'none';
-		
-				Id('skipBtns').style.display = options.skipBtns !== false ? 'flex' : 'none';
-		
+
+		// show or hide the skip +/- buttons
+		Id('skipBtns').style.display = options.skipBtns !== false ? 'flex' : 'none';
+
 		// draw the DAY data table
 		if (options.dataDay) {
 			let weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
