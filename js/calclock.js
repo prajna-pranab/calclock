@@ -39,6 +39,12 @@
  										double setHeading(12000) reset (the cleaner shape we
  										noted 7 Libra); the leftover-save drain routes through
  										restore() so ctx and heading always stay in step.
+ 										Face skip buttons now tuck away while the menu is
+ 										open, same courtesy as the hamburger (his QC) — one
+ 										menuHandler.skipRefresh() rule serving menu open,
+ 										close, and every draw; verified: hidden on open,
+ 										back on close, and a disabled option stays disabled
+ 										through a menu cycle.
  * version 1.2.0: 27 Aries♈ 13527	 -- Refactored UCCLib.js to ES6;
  										Added Cwmraeg day names; Added Geocentric day order;
  										Fixed various bugs Claude identified;
@@ -428,6 +434,13 @@
 		iconHide() {
 			this.trigram.classList.add('hidden');
 		},
+		// face skip buttons: hidden while the menu is open, else follow
+		// the option — same courtesy as the hamburger (his QC, 16 Libra)
+		skipRefresh() {
+			Id('skipBtns').style.display =
+				options.skipBtns !== false &&
+				!this.menu.classList.contains('opened') ? 'flex' : 'none';
+		},
 		iconRestore() {
 			this.trigram.classList.remove('removed');
 		},
@@ -439,6 +452,8 @@
 			this.addTabListeners();
 			// show the menu
 			this.menu.classList.add('opened');
+			// tuck the face skip buttons away with the hamburger
+			this.skipRefresh();
 		},
 		menuClose() {
 			// drop the listeners
@@ -448,6 +463,8 @@
 			// show the trigram
 			this.iconShow();
 			this.iconRestore();
+			// bring the face skip buttons back (if enabled)
+			this.skipRefresh();
 		},
 		clearTabs() {
 			// remove the current listeners
@@ -1444,8 +1461,9 @@
 			Id('dateHeading').style.display = 'block';
 		} else Id('dateHeading').style.display = 'none';
 
-		// show or hide the skip +/- buttons
-		Id('skipBtns').style.display = options.skipBtns !== false ? 'flex' : 'none';
+		// show or hide the skip +/- buttons (single rule: follows the
+		// option and tucks away while the menu is open)
+		menuHandler.skipRefresh();
 
 		// draw the DAY data table
 		if (options.dataDay) {
