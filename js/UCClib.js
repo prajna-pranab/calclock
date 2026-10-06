@@ -4,6 +4,10 @@
  *
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and refactoring by Claude AI
  *
+ * version 1.2.1 16 Libra♎ 13527    - Deek symbol + greek/hind getters follow
+ *                                     the helio/geo day order like the day
+ *                                     name (adds DSYMBOLS_GEO; 790-pair node
+ *                                     test PASS both modes)
  * version 1.2.0 27 Aries♈ 13527    - Refactored to ES6 class;
  *                                     consolidated lookup tables;
  *                                     cached computed properties;
@@ -44,7 +48,7 @@ class UCCDate {
 
   //************************** Static constants **********************************//
 
-  static get VERSION()        { return '1.2.0'; }
+  static get VERSION()        { return '1.2.1'; }
   static get OFFSET()         { return Date.UTC(-11502, 2, 21); }  // UCC Epoc offset from Unix Epoc in ms
   static get ONE_DAY()        { return 86400000; }                  // 24 * 60 * 60 * 1000 ms
   static get ONE_YEAR()       { return 31536000000; }               // 365 * 24 * 60 * 60 * 1000 ms

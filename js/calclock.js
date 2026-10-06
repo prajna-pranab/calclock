@@ -29,6 +29,10 @@
  										controls honouring the step setting, Show-tab "Skip buttons"
  										toggle (default on), animate-safe; set half a button height
  										below the bars at his QC; click + vision verified.
+ 										Show-tab rearrangement (his QC): "Skip buttons" sits
+ 										just under "Menu Button"; "Moon" moved to the top of the
+ 										right column. UCClib VERSION bumped to 1.2.1 (the deek
+ 										symbol work had shipped without it).
  * version 1.2.0: 27 Aries♈ 13527	 -- Refactored UCCLib.js to ES6;
  										Added Cwmraeg day names; Added Geocentric day order;
  										Fixed various bugs Claude identified;
