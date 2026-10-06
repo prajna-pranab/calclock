@@ -344,6 +344,9 @@
 
 	// set up event listeners for menu and unload
 	const eventHandlers = () => {
+		// face skip +/- buttons (feature request: Andy Zen Pagan, Holistic Radio; Tweak)
+		Id('skipBack').addEventListener('click', goBack);
+		Id('skipFwd').addEventListener('click', goFwd);
 		// on page load add handlers
 		window.addEventListener('load', () => {
 			// reconfigure the interface to match the options
@@ -2084,8 +2087,5 @@
 	};
 
 	// set up event handlers
-		// skip +/- buttons (feature request: Andy Zen Pagan, Holistic Radio; Tweak)
-		Id('skipBack').addEventListener('click', goBack);
-		Id('skipFwd').addEventListener('click', goFwd);
 	eventHandlers();
 }
