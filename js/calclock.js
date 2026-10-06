@@ -33,6 +33,12 @@
  										just under "Menu Button"; "Moon" moved to the top of the
  										right column. UCClib VERSION bumped to 1.2.1 (the deek
  										symbol work had shipped without it).
+ 										save()/restore() push+pop `heading` with the ctx
+ 										(item 23): the Great Year ring segment is now wrapped
+ 										save -> setHeading(12000) -> restore, retiring the
+ 										double setHeading(12000) reset (the cleaner shape we
+ 										noted 7 Libra); the leftover-save drain routes through
+ 										restore() so ctx and heading always stay in step.
  * version 1.2.0: 27 Aries♈ 13527	 -- Refactored UCCLib.js to ES6;
  										Added Cwmraeg day names; Added Geocentric day order;
  										Fixed various bugs Claude identified;
@@ -97,6 +103,7 @@
 		callBack = 0,					// animation callback
 		saveCount = 0,					// track context saves and restores
 		heading = 0,					// current rotation of the clock face.
+		headingStack = [],				// save()/restore() push+pop `heading` with the ctx (item 23)
 		isInstalled = false;			// set true when installed as PWA
 
 	// Options and titles updating ----------------------------------------------
@@ -779,15 +786,17 @@
 			ctx.rotate(heading);
 		}
 
-		// keep track of how many saves we've done
+		// keep track of how many saves we've done (context AND heading)
 		const save = () => {
 			ctx.save();
+			headingStack.push(heading);
 			saveCount++;
 		}
 
-		// keep track of how many restores we've done
+		// keep track of how many restores we've done (context AND heading)
 		const restore = () => {
 			ctx.restore();
+			heading = headingStack.pop();
 			saveCount--;
 		}
 
@@ -1391,7 +1400,8 @@
 		currentDate = today;  // so we can animate from this date
 
 		// tidy up any unrestored saves to reset to original canvas state
-		if (saveCount) while (saveCount--) ctx.restore();
+		// (restore() pops `heading` too, so the stack stays in step)
+		while (saveCount) restore();
 
 		// adjust canvas size if no Great Year or Sidereal rings
 		if (!options.sidRing) {
@@ -1482,7 +1492,8 @@
 		// draw and rotate text from its center
 		ctx.textBaseline = 'middle';
 		
-		// rotate to year 12000
+		// save context + heading, then rotate to year 12000 for the ring
+		save();
 		setHeading(12000);
 		
 		// draw the Great Year disc
@@ -1541,19 +1552,12 @@
 				13100, 13400, 15400, 15900, 18900, 19600, 23600]
 		});
 
-		// reset rotation to draw constellations etc.
-		// NOT a no-op — setHeading() both rotates the ctx AND stores the
-		// module-level `heading` that drawText() counter-rotates labels
-		// with; ctx.save/restore does NOT restore that variable.
-		// Year 12000 is the one anchor where wobble and VRP agree exactly
-		// (E = M = 180°), so these two calls net a full turn (ctx ≡ 0) in
-		// EITHER mode while leaving heading = -180° — which is what the
-		// label maths needs here (orientation = ctxRot + deg2rad(180)
-		// - heading ≡ 0). Zeroing `heading` instead would flip the labels.
-		// Cleaner future shape: make save()/restore() push+pop `heading`
-		// too, and this reset becomes unnecessary.
-		// Noted 7 Libra 13527 (27 Sep 2026), Setu & Prajna.
-		setHeading(12000);
+		// restore the rotation and heading after the ring (item 23):
+		// save()/restore() now push+pop `heading` too, so this clean
+		// restore retires the old double setHeading(12000) reset —
+		// the shape we noted 7 Libra 13527 (Setu & Prajna). ctx comes
+		// back to 0 (post-translate) for the constellations and discs.
+		restore();
 
 		// draw constellation background
 		if (options.sidRing) doConstellations({
