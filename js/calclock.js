@@ -393,6 +393,8 @@
 		window.addEventListener('load', () => {
 			// reconfigure the interface to match the options
 			setOptions();
+			// from here draws may sync options back from the controls
+			options.inited = true;
 			// activate the menu listener
 			menuHandler.listen();
 			// enable click on UCC Date to copy to clipboard
@@ -1450,8 +1452,10 @@
 		}
 		// Draw the whole calendar -----------------------------------------------
 
-		// update the options and checkbox titles
-		options=currOptions();
+		// update the options and checkbox titles — but only after init:
+		// a pre-init draw would clobber the saved options with the HTML
+		// defaults (his 1.2.3 refresh bug: settings wouldn't stick)
+		if (options.inited) options=currOptions();
 
 		// set the day name order and language for deekday/triad names
 		today.helio = options.helio;

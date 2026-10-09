@@ -7,6 +7,8 @@
 
 // Cached version of CalClock
 const CACHED_VERSION = '1.2.3';
+// 1.2.3 dev note: any content change rides with a byte-nudge here so
+// browsers re-install the precache (fetch-failure falls back to cache).
 const CURR_CACHE = 'calclock';
 
 // find the absolute root pathname

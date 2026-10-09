@@ -206,15 +206,18 @@ a {
 	cursor: pointer;
 	z-index: 11;
 }
-/* Gregorian footer (1.2.3, Tweak) */
+/* Gregorian footer (1.2.3, Tweak) — the heading's shadow: same orange,
+   same bold, smaller and dimmer (his QC: don't leave it plain) */
 #dateFooter {
 	position: relative;
 	width: 60%;
 	top: .15rem;
 	margin: 0 auto;
-	font-size: .85rem;
+	font-size: .8rem;
+	font-weight: bold;
+	color: orange;
 	text-align: center;
-	opacity: .8;
+	opacity: .7;
 	z-index: 11;
 }
 /* Data Tables */
