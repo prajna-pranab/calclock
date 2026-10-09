@@ -4,6 +4,11 @@
  *
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and refactoring by Claude AI
  *
+ * version 1.2.3 19 Libra♎ 13527    - Full format's written triad number
+ *                                     follows the selected language
+ *                                     (Tweak's consistency ask: new
+ *                                     NUMBER_WORDS table, ONE..TWELVE
+ *                                     per language)
  * version 1.2.2 19 Libra♎ 13527    - Festival periods (Tweak's spec): mid-
  *                                     season festivals = whole middle deek
  *                                     (triad days 11-20 of Taurus/Leo/
@@ -56,7 +61,7 @@ class UCCDate {
 
   //************************** Static constants **********************************//
 
-  static get VERSION()        { return '1.2.2'; }
+  static get VERSION()        { return '1.2.3'; }
   static get OFFSET()         { return Date.UTC(-11502, 2, 21); }  // UCC Epoc offset from Unix Epoc in ms
   static get ONE_DAY()        { return 86400000; }                  // 24 * 60 * 60 * 1000 ms
   static get ONE_YEAR()       { return 31536000000; }               // 365 * 24 * 60 * 60 * 1000 ms
@@ -77,6 +82,17 @@ class UCCDate {
       ['Mesham','Vrishabham','Mithunam','Karkatakam','Simham','Kanya','Thula','Vrischikam','Dhanus','Makaram','Kumbham','Meenam'],
       ['Krios','Tavros','Didymoi','Karkinos','Leōn','Parthenos','Zygos','Skorpios','Toxotēs','Aigokerōs','Hydrokhoos','Ikhthyes'],
       ['Hwrdd','Tarw','Efeilliaid','Cranc','Llew','Gwyryf','Graddfeydd','Sgorpion','Saethwr','Gafr Fôr','Cludwr Dŵr','Pysgod']
+    ];
+  }
+
+  // triad number words by language for the full format (Tweak's
+  // language-consistency ask, 1.2.3): ONE..TWELVE per language
+  static get NUMBER_WORDS() {
+    return [
+      ['ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE','TEN','ELEVEN','TWELVE'],
+      ['EK','DO','TEEN','CHAR','PANCH','CHHAH','SAAT','AATH','NAU','DAS','GYARAH','BARAH'],
+      ['ENA','DYO','TRIA','TESSERA','PENTE','HEX','HEPTA','OKTO','ENNEA','DEKA','HEKADEKA','DODEKA'],
+      ['UN','DAU','TRI','PEDWAR','PUMP','CHWECH','SAITH','WYTH','NAW','DEG','UN AR DDEG','DEUDDEG'],
     ];
   }
 
@@ -407,7 +423,7 @@ class UCCDate {
   //************************** Output format helpers *****************************//
 
   _outFull() {
-    const numbers = ['ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE','TEN','ELEVEN','TWELVE'];
+    const numbers = UCCDate.NUMBER_WORDS[this._names];
     if (this._doy === 0) return '0 ZERO ' + this._year;
     if (this._doy === 1) return '1 ZERO ' + this._year;
     const ord = this._day > 0 ? String(this._day) : '0';

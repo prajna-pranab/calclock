@@ -206,6 +206,17 @@ a {
 	cursor: pointer;
 	z-index: 11;
 }
+/* Gregorian footer (1.2.3, Tweak) */
+#dateFooter {
+	position: relative;
+	width: 60%;
+	top: .15rem;
+	margin: 0 auto;
+	font-size: .85rem;
+	text-align: center;
+	opacity: .8;
+	z-index: 11;
+}
 /* Data Tables */
 #dataTr {
 	position: absolute;

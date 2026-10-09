@@ -6,6 +6,16 @@
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and assistance from Claude AI
  * 1st version: Leo 13,517
  *
+ * version 1.2.3: 19 Libra♎ 13527	 -- Tweak + Andy Zen Pagan asks (his
+ 										two post-1.2.2 DMs): (a) "Gregorian footer"
+ 										Show-menu option — today's CE date under the
+ 										UCÇ heading at the same format level (full =
+ 										"Friday, 9 October 2026"); (b) the full UCÇ
+ 										format's written triad number follows the
+ 										selected language (ONE..TWELVE / Hindi /
+ 										Greek / Cymraeg words — UCClib NUMBER_WORDS).
+ 										Canvas sizing untouched: the footer is a
+ 										small relative block under the heading.
  * version 1.2.2: 19 Libra♎ 13527	 -- runMode installed-line honesty fix:
  										display-mode standalone OR our a2hs flag (menu-installed
  										PWAs no longer read "Not installed" — his root-cause,
@@ -106,7 +116,7 @@
  */
 'use strict';
 {
-	const VERSION = '1.2.2',
+	const VERSION = '1.2.3',
 			DEG_PER_YR = 360 / 24000,	// fraction of a degree per year discounting precession
 			CIRC = 2 * Math.PI,			// 360deg in radians
 			MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
@@ -118,6 +128,23 @@
 		heading = 0,					// current rotation of the clock face.
 		headingStack = [],				// save()/restore() push+pop `heading` with the ctx (item 23)
 		isInstalled = false;			// set true when installed as PWA
+
+	// Gregorian footer formats (Tweak, 1.2.3): CE date mirroring the
+	// UCÇ heading format level — full/long/medium/short/sortable
+	const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
+		'Thursday', 'Friday', 'Saturday'];
+	const MONTHS_FULL = ['January', 'February', 'March', 'April', 'May',
+		'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+	const CE_FMT = {
+		0: d => WEEKDAYS[d.getUTCDay()] + ', ' + d.getUTCDate() + ' ' +
+			MONTHS_FULL[d.getUTCMonth()] + ' ' + d.getUTCFullYear(),
+		1: d => d.getUTCDate() + ' ' + MONTHS_FULL[d.getUTCMonth()] + ' ' + d.getUTCFullYear(),
+		2: d => d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()] + ' ' + d.getUTCFullYear(),
+		3: d => ('0' + d.getUTCDate()).slice(-2) + '/' +
+			('0' + (d.getUTCMonth() + 1)).slice(-2) + '/' + d.getUTCFullYear(),
+		4: d => d.getUTCFullYear() + '.' + ('0' + (d.getUTCMonth() + 1)).slice(-2) +
+			'.' + ('0' + d.getUTCDate()).slice(-2),
+	};
 
 	// Options and titles updating ----------------------------------------------
 
@@ -136,6 +163,7 @@
 			dataGY: Id('ctl_dataGY').checked,
 			dateHead: Id('ctl_dateHead').checked,
 			headingDays: Id('ctl_headingDays').checked,
+			gregFooter: Id('ctl_gregFooter').checked,
 			skipBtns: Id('ctl_skipBtns').checked,
 			moon: Id('ctl_moon').checked,
 			dayMkr: Id('ctl_dayMkr').checked,
@@ -170,6 +198,7 @@
 		Id('ctl_dataGY').checked = options.dataGY;
 		Id('ctl_dateHead').checked = options.dateHead;
 		Id('ctl_headingDays').checked = options.headingDays !== false;
+		Id('ctl_gregFooter').checked = options.gregFooter;
 		Id('ctl_skipBtns').checked = options.skipBtns !== false;
 		Id('ctl_moon').checked = options.moon;
 		Id('ctl_dayMkr').checked = options.dayMkr;
@@ -420,6 +449,7 @@
 		setDataGY: Id('ctl_dataGY'),
 		setDateHead: Id('ctl_dateHead'),
 		setHeadingDays: Id('ctl_headingDays'),
+		setGregFooter: Id('ctl_gregFooter'),
 		setSkipBtns: Id('ctl_skipBtns'),
 		setMoon: Id('ctl_moon'),
 		setDayMkr: Id('ctl_dayMkr'),
@@ -528,6 +558,7 @@
 				this.setDataGY.removeEventListener('change', refresh);
 				this.setDateHead.removeEventListener('change', refresh);
 				this.setHeadingDays.removeEventListener('change', refresh);
+				this.setGregFooter.removeEventListener('change', refresh);
 				this.setSkipBtns.removeEventListener('change', refresh);
 				this.setMoon.removeEventListener('change', refresh);
 				this.setDayMkr.removeEventListener('change', refresh);
@@ -576,6 +607,7 @@
 				this.setDataGY.addEventListener('change', refresh);
 				this.setDateHead.addEventListener('change', refresh);
 				this.setHeadingDays.addEventListener('change', refresh);
+				this.setGregFooter.addEventListener('change', refresh);
 				this.setSkipBtns.addEventListener('change', refresh);
 				this.setMoon.addEventListener('change', refresh);
 				this.setDayMkr.addEventListener('change', refresh);
@@ -1468,6 +1500,14 @@
 			Id('dateHeading').style.display = 'block';
 		} else Id('dateHeading').style.display = 'none';
 
+		// Gregorian footer (Tweak, 1.2.3): CE date under the heading in the
+		// same format level as the UCÇ heading — a small relative block;
+		// the canvas keeps its own sizing (his worry, measured at QC)
+		if (options.dateHead && options.gregFooter) {
+			Id('dateFooter').innerHTML = CE_FMT[options.dateFmt || 1](today.utcDate);
+			Id('dateFooter').style.display = 'block';
+		} else Id('dateFooter').style.display = 'none';
+
 		// show or hide the skip +/- buttons (single rule: follows the
 		// option and tucks away while the menu is open)
 		menuHandler.skipRefresh();
@@ -2024,7 +2064,8 @@
 	    skipBtns: true,
 	    deekSymb: true, ysf: false, sidRing: true, gysf: true,
 	    yearMkr: true, yearNum: true, gyRing: true, sandhis: true,
-	    vrp: true, helio: false, constMarkers: false, installed: false
+	    vrp: true, helio: false, constMarkers: false, gregFooter: false,
+	    installed: false
 	});
 		// update options from local storage if they've been saved
 	let options = (localStorage.calclock) ?
