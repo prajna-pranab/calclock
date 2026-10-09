@@ -127,7 +127,8 @@
 		saveCount = 0,					// track context saves and restores
 		heading = 0,					// current rotation of the clock face.
 		headingStack = [],				// save()/restore() push+pop `heading` with the ctx (item 23)
-		isInstalled = false;			// set true when installed as PWA
+		isInstalled = false,			// set true when installed as PWA
+		inited = false;					// set after setOptions(): draws may then sync options from the controls
 
 	// Gregorian footer formats (Tweak, 1.2.3): CE date mirroring the
 	// UCÇ heading format level — full/long/medium/short/sortable
@@ -394,7 +395,7 @@
 			// reconfigure the interface to match the options
 			setOptions();
 			// from here draws may sync options back from the controls
-			options.inited = true;
+			inited = true;
 			// activate the menu listener
 			menuHandler.listen();
 			// enable click on UCC Date to copy to clipboard
@@ -1455,7 +1456,7 @@
 		// update the options and checkbox titles — but only after init:
 		// a pre-init draw would clobber the saved options with the HTML
 		// defaults (his 1.2.3 refresh bug: settings wouldn't stick)
-		if (options.inited) options=currOptions();
+		if (inited) options=currOptions();
 
 		// set the day name order and language for deekday/triad names
 		today.helio = options.helio;

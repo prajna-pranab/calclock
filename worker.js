@@ -9,6 +9,7 @@
 const CACHED_VERSION = '1.2.3';
 // 1.2.3 dev note: any content change rides with a byte-nudge here so
 // browsers re-install the precache (fetch-failure falls back to cache).
+// 1.2.3b: inited-flag fix + versioned asset URLs in index.html.
 const CURR_CACHE = 'calclock';
 
 // find the absolute root pathname
