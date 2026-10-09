@@ -6,7 +6,7 @@
 */
 
 // Cached version of CalClock
-const CACHED_VERSION = '1.2.1';
+const CACHED_VERSION = '1.2.2';
 const CURR_CACHE = 'calclock';
 
 // find the absolute root pathname

@@ -6,6 +6,13 @@
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and assistance from Claude AI
  * 1st version: Leo 13,517
  *
+ * version 1.2.2: 19 Libra♎ 13527	 -- runMode installed-line honesty fix:
+ 										display-mode standalone OR our a2hs flag (menu-installed
+ 										PWAs no longer read "Not installed" — his root-cause,
+ 										his go); VERSION + worker cache label cut to 1.2.2;
+ 										UCClib rides 1.2.2 (Tweak's festival periods, 2f5a7a8:
+ 										whole middle deek + cardinal 4+intercalary+4, verified
+ 										by a 1,461-day node matrix incl. leap 13530).
  * version 1.2.1: 7 Libra♎ 13527	 -- zodiac background SVG => PNG
  										(1600², 809KB — same art, faster first load);
  										cut VERSION + worker cache label to 1.2.1;
@@ -99,7 +106,7 @@
  */
 'use strict';
 {
-	const VERSION = '1.2.1',
+	const VERSION = '1.2.2',
 			DEG_PER_YR = 360 / 24000,	// fraction of a degree per year discounting precession
 			CIRC = 2 * Math.PI,			// 360deg in radians
 			MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
@@ -1504,7 +1511,12 @@
 		// Write data to About tab
 		Id('swVersion').innerHTML = VERSION;
 		Id('libVersion').innerHTML = today.version;
-		Id('runMode').innerHTML = hosted && options.installed ? 'Mode: PWA, Installed'
+		// real install = display-mode standalone — menu-installed PWAs never
+		// trip our a2hs flag (his root-cause); the flag still counts for
+		// installs made through our own banner
+		Id('runMode').innerHTML = hosted &&
+			(matchMedia('(display-mode: standalone)').matches || options.installed)
+			? 'Mode: PWA, Installed'
 			: hosted ? 'Mode: PWA, Not installed' : 'Mode: local';
 
 		// move the origin to the center of the canvas
