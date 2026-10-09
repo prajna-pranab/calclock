@@ -4,7 +4,17 @@
  *
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and refactoring by Claude AI
  *
- * version 1.2.3 19 Libra♎ 13527    - Full format's written triad number
+ * version 1.2.3 19 Libra♎ 13527    - A fifth language: **Kemmet**
+ *                                     (the twelve months of Kēme as triad
+ *                                     names — their year was 12x30+5 like
+ *                                     ours; the wandering-star gods as day
+ *                                     names: Osiris, Iah, Sebegu, Sopdu, Ra,
+ *                                     the three Horus forms, Shu, Nun — and
+ *                                     heliocentric adds Geb for Earth and
+ *                                     Nepri, grain-god, for Ceres; Coptic
+ *                                     number words OUO..MEET). A quiet gift
+ *                                     for a family who loves Egypt.
+ *                                     Also: full format's written triad number
  *                                     follows the selected language
  *                                     (Tweak's consistency ask: new
  *                                     NUMBER_WORDS table, ONE..TWELVE
@@ -72,7 +82,7 @@ class UCCDate {
 
   // language names
   static get LANGUAGES() {
-    return ['Western', 'Hindi', 'Hellenistic', 'Cymraeg'];
+    return ['Western', 'Hindi', 'Hellenistic', 'Cymraeg', 'Kemmet'];
   }
 
   // triad names by language index
@@ -81,7 +91,10 @@ class UCCDate {
       ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'],
       ['Mesham','Vrishabham','Mithunam','Karkatakam','Simham','Kanya','Thula','Vrischikam','Dhanus','Makaram','Kumbham','Meenam'],
       ['Krios','Tavros','Didymoi','Karkinos','Leōn','Parthenos','Zygos','Skorpios','Toxotēs','Aigokerōs','Hydrokhoos','Ikhthyes'],
-      ['Hwrdd','Tarw','Efeilliaid','Cranc','Llew','Gwyryf','Graddfeydd','Sgorpion','Saethwr','Gafr Fôr','Cludwr Dŵr','Pysgod']
+      ['Hwrdd','Tarw','Efeilliaid','Cranc','Llew','Gwyryf','Graddfeydd','Sgorpion','Saethwr','Gafr Fôr','Cludwr Dŵr','Pysgod'],
+      // the twelve months of Kēme (Coptic forms), first to twelfth —
+      // their year was 12 x 30 + 5 epagomenal days, like ours
+      ['Thōth','Phaouthi','Athōr','Koiak','Tōbi','Mekhir','Paremhat','Paremhotep','Pachons','Paōni','Epepi','Mesore']
     ];
   }
 
@@ -93,6 +106,7 @@ class UCCDate {
       ['EK','DO','TEEN','CHAR','PANCH','CHHAH','SAAT','AATH','NAU','DAS','GYARAH','BARAH'],
       ['ENA','DYO','TRIA','TESSERA','PENTE','HEX','HEPTA','OKTO','ENNEA','DEKA','HEKADEKA','DODEKA'],
       ['UN','DAU','TRI','PEDWAR','PUMP','CHWECH','SAITH','WYTH','NAW','DEG','UN AR DDEG','DEUDDEG'],
+      ['OUO','ESNAV','SHOMT','EFTOU','ETIOU','SOOU','SHASHF','ESHMEEN','PSIT','MEET','MEET EN OUO','MEET EN ESNAV'],
     ];
   }
 
@@ -107,7 +121,13 @@ class UCCDate {
       ['Pluto','Moon','Mercury','Venus','Sun','Mars','Jupiter','Saturn','Uranus','Neptune'],        // Western
       ['Yama','Chandra','Budha','Shukra','Ravi','Mangala','Guru','Shani','Vasuki','Varuna'],        // Hindi
       ['Hades','Selene','Hermes','Aphrodite','Helios','Ares','Zeus','Cronus','Caelus','Poseidon'],  // Greek
-      ['Plwton','Lloer','Merchwri','Venws','Haul','Mawrth','Iŵpiter','Sadwrn','Yranws','Neifion']   // Cwmraeg
+      ['Plwton','Lloer','Merchwri','Venws','Haul','Mawrth','Iŵpiter','Sadwrn','Yranws','Neifion'],  // Cwmraeg
+      // Kēme: Osiris (underworld), Iah (moon), Sebegu (Mercury),
+      // Sopdu (Venus), Ra (sun), the three Horus forms for the outer
+      // planets (Hor-desher=Mars, Hor-katau=Jupiter, Hor-ka-pet=Saturn),
+      // Shu (sky) and Nun (the waters) — Uranus/Neptune have no
+      // ancient names, so their principles speak (airs and abyss)
+      ['Osiris','Iah','Sebegu','Sopdu','Ra','Hor-desher','Hor-katau','Hor-ka-pet','Shu','Nun']
     ];
   }
 
@@ -118,7 +138,10 @@ class UCCDate {
       ['Neptune','Sol','Mercury','Venus','Earth','Mars','Ceres','Jupiter','Saturn','Uranus'],       // Western
       ['Varuna','Ravi','Budha','Shukra','Thal','Mangala','Shakti','Guru','Shani','Vasuki'],         // Hindi
       ['Poseidon','Helios','Hermes','Aphrodite','Terra','Ares','Demeter','Zeus','Cronus','Caelus'], // Greek
-      ['Neifion','Haul','Merchwri','Venws','Daear','Mawrth','Ceres','Iŵpiter','Sadwrn','Yranws']    // Cwmraeg
+      ['Neifion','Haul','Merchwri','Venws','Daear','Mawrth','Ceres','Iŵpiter','Sadwrn','Yranws'],   // Cwmraeg
+      // Kēme: Nun (waters), Ra (Sol), Sebegu, Sopdu, Geb (the earth),
+      // Hor-desher, Nepri (grain — Ceres's kin), Hor-katau, Hor-ka-pet, Shu
+      ['Nun','Ra','Sebegu','Sopdu','Geb','Hor-desher','Nepri','Hor-katau','Hor-ka-pet','Shu']
     ];
   }
 
