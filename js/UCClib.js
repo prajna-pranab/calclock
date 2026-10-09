@@ -4,6 +4,14 @@
  *
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and refactoring by Claude AI
  *
+ * version 1.2.2 19 Libra♎ 13527    - Festival periods (Tweak's spec): mid-
+ *                                     season festivals = whole middle deek
+ *                                     (triad days 11-20 of Taurus/Leo/
+ *                                     Scorpio/Aquarius, deeks 5/14/23/32);
+ *                                     cardinal festivals = last 4 days of
+ *                                     the preceding triad + intercalary +
+ *                                     first 4 days (doy windows extended;
+ *                                     wrap start now table-driven)
  * version 1.2.1 16 Libra♎ 13527    - Deek symbol + greek/hind getters follow
  *                                     the helio/geo day order like the day
  *                                     name (adds DSYMBOLS_GEO; 790-pair node
@@ -48,7 +56,7 @@ class UCCDate {
 
   //************************** Static constants **********************************//
 
-  static get VERSION()        { return '1.2.1'; }
+  static get VERSION()        { return '1.2.2'; }
   static get OFFSET()         { return Date.UTC(-11502, 2, 21); }  // UCC Epoc offset from Unix Epoc in ms
   static get ONE_DAY()        { return 86400000; }                  // 24 * 60 * 60 * 1000 ms
   static get ONE_YEAR()       { return 31536000000; }               // 365 * 24 * 60 * 60 * 1000 ms
@@ -118,17 +126,21 @@ class UCCDate {
   }
 
   // festival lookup table: [doy_min_exclusive, doy_max_exclusive, triad_index, number, symbol]
-  // doy_min_exclusive: -1 means wrap-around (doy > 363 || doy < 3)
+  // doy_min_exclusive: -1 means wrap-around (doy > wrap || doy < max)
+  // Festival periods per Tweak (2026-10-08/09): cardinal festivals = last
+  // 4 days of the preceding triad + intercalary days + first 4 days of the
+  // cardinal triad; mid-season festivals = the whole middle deek (triad
+  // days 11-20) of the fixed-sign triads (deeks 5, 14, 23, 32).
   static get FESTIVALS() {
     return [
-      { min: -1,  max: 3,   triad: 0,  number: 1, symbol: '\u2295\u2648' },  // aries
-      { min: 46,  max: 49,  triad: 1,  number: 2, symbol: '\u2297\u2649' },  // taurus
-      { min: 91,  max: 95,  triad: 3,  number: 3, symbol: '\u2295\u264B' },  // cancer
-      { min: 137, max: 140, triad: 4,  number: 4, symbol: '\u2297\u264C' },  // leo
-      { min: 183, max: 188, triad: 6,  number: 5, symbol: '\u2295\u264E' },  // libra
-      { min: 228, max: 231, triad: 7,  number: 6, symbol: '\u2297\u264F' },  // scorpio
-      { min: 274, max: 278, triad: 9,  number: 7, symbol: '\u2295\u2651' },  // capricorn
-      { min: 319, max: 322, triad: 10, number: 8, symbol: '\u2297\u2652' },  // aquarius
+      { min: -1,  wrap: 361, max: 7,   triad: 0,  number: 1, symbol: '\u2295\u2648' },  // aries:  Pisces d27-30 + intercalary + Aries d1-4
+      { min: 42,  max: 53,   triad: 1,  number: 2, symbol: '\u2297\u2649' },  // taurus:    deek 5 (triad days 11-20)
+      { min: 88,  max: 98,   triad: 3,  number: 3, symbol: '\u2295\u264B' },  // cancer:    Gemini d27-30 + intercalary + Cancer d1-4
+      { min: 133, max: 144,  triad: 4,  number: 4, symbol: '\u2297\u264C' },  // leo:       deek 14 (triad days 11-20)
+      { min: 179, max: 189,  triad: 6,  number: 5, symbol: '\u2295\u264E' },  // libra:     Virgo d27-30 + intercalary + Libra d1-4
+      { min: 224, max: 235,  triad: 7,  number: 6, symbol: '\u2297\u264F' },  // scorpio:   deek 23 (triad days 11-20)
+      { min: 270, max: 280,  triad: 9,  number: 7, symbol: '\u2295\u2651' },  // capricorn: Sagittarius d27-30 + intercalary + Capricorn d1-4
+      { min: 315, max: 326,  triad: 10, number: 8, symbol: '\u2297\u2652' },  // aquarius:  deek 32 (triad days 11-20)
     ];
   }
 
@@ -352,7 +364,7 @@ class UCCDate {
     const doy = this._doy;
     for (const f of UCCDate.FESTIVALS) {
       if (f.min === -1) {
-        if (doy > 363 || doy < f.max) return f;
+        if (doy > f.wrap || doy < f.max) return f;
       } else if (doy > f.min && doy < f.max) {
         return f;
       }
