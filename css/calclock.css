@@ -186,7 +186,8 @@ a {
 	border: 1px solid rgba(255, 100, 50, 0.45);
 	background: rgba(0, 0, 0, 0.55);
 	color: orange;
-	font-size: 1.25rem;	/* one size up from the 1.1 start (his QC) */
+	font-size: 1.35rem;	/* his eye: glyphs still read smaller than the
+                           Today caption — one point up (1.2.4 pass 1) */
 	line-height: 1;
 	cursor: pointer;
 	display: inline-flex;
