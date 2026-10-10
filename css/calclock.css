@@ -224,7 +224,7 @@ a {
 	background: rgba(0, 0, 0, 0.45);
 	color: orange;
 	opacity: .85;
-	font-size: .68rem;
+	font-size: .8rem;	/* same as the Today caption (his call — was .68) */
 	line-height: 1.35;
 	white-space: nowrap;
 }
