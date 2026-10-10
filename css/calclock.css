@@ -217,7 +217,8 @@ a {
 	transform: translateX(-50%);
 	margin: .2rem 0 0;
 	width: auto;
-	height: auto;
+	height: 1.9rem;	/* same button height as Today + glyphs (his eye —
+                       "more like a Nintendo control") */
 	padding: 0 .4rem;
 	border: 1px solid rgba(255, 100, 50, 0.3);
 	border-radius: .6rem;
