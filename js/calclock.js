@@ -6,6 +6,15 @@
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and assistance from Claude AI
  * 1st version: Leo 13,517
  *
+ * version 1.2.4: 20 Libra♎ 13527	 -- Face controls (his spec, the Knowledge
+ 										Nugget show 10-Oct): a Today button beside the skip
+ 										buttons (resets to today — the menu's setToday, same
+ 										anim-guard) and a step chip beneath them showing the
+ 										current skip size (Day/Decan/Triad/Quarter/Year/
+ 										Jump-to), click to cycle — both views of the one
+ 										stepDays state; both tuck with the skip buttons
+ 										while the menu is open. Stepped pass 1 of the 1.2.4
+ 										list (one item, one QC, one cut — his process).
  * version 1.2.3: 19 Libra♎ 13527	 -- Tweak + Andy Zen Pagan asks (his
  										two post-1.2.2 DMs): (a) "Gregorian footer"
  										Show-menu option — today's CE date under the
@@ -116,7 +125,7 @@
  */
 'use strict';
 {
-	const VERSION = '1.2.3',
+	const VERSION = '1.2.4',
 			DEG_PER_YR = 360 / 24000,	// fraction of a degree per year discounting precession
 			CIRC = 2 * Math.PI,			// 360deg in radians
 			MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
@@ -390,12 +399,23 @@
 		// face skip +/- buttons (feature request: Andy Zen Pagan, Holistic Radio; Tweak)
 		Id('skipBack').addEventListener('click', goBack);
 		Id('skipFwd').addEventListener('click', goFwd);
+		// face Today button + step chip (1.2.4, his spec: Today beside the
+		// skip buttons; the current skip size shown beneath, click to cycle)
+		Id('skipToday').addEventListener('click', setToday);
+		Id('stepChip').addEventListener('click', () => {
+			const sel = Id('ctl_step');
+			sel.selectedIndex = (sel.selectedIndex + 1) % sel.options.length;
+			redraw();	// draws sync options from the controls (post-init)
+		});
 		// on page load add handlers
 		window.addEventListener('load', () => {
 			// reconfigure the interface to match the options
 			setOptions();
 			// from here draws may sync options back from the controls
 			inited = true;
+			// the first draw may have labelled the step chip from the
+			// HTML defaults — re-sync now the saved state has landed
+			syncStepChip();
 			// activate the menu listener
 			menuHandler.listen();
 			// enable click on UCC Date to copy to clipboard
@@ -477,6 +497,7 @@
 		// face skip buttons: hidden while the menu is open, else follow
 		// the option — same courtesy as the hamburger (his QC, 16 Libra)
 		skipRefresh() {
+			// the step chip lives inside #skipBtns — one rule tucks both
 			Id('skipBtns').style.display =
 				options.skipBtns !== false &&
 				!this.menu.classList.contains('opened') ? 'flex' : 'none';
@@ -659,6 +680,14 @@
 	// Redraw Events ------------------------------------------------------------
 
 	// redraw the clock, start or stop animation
+	// step chip is a view of ctl_step — keep the label true; the first
+	// draw can beat setOptions on cached visits, so the load handler
+	// calls this again after the saved state lands
+	const syncStepChip = () => {
+		Id('stepChip').textContent =
+			Id('ctl_step').selectedOptions[0].text.replace('One ', '');
+	};
+
 	const redraw = (date=currentDate) => {
 		let options = currOptions();
 		// update currentDate in case a different date was provided
@@ -1504,6 +1533,10 @@
 				: dateStrs[options.dateFmt];
 			Id('dateHeading').style.display = 'block';
 		} else Id('dateHeading').style.display = 'none';
+
+		// step chip mirrors the step select — both views of stepDays;
+		// lives in the draw path so the FIRST draw labels it too
+		syncStepChip();
 
 		// Gregorian footer (Tweak, 1.2.3): CE date under the heading in the
 		// same format level as the UCÇ heading — a small relative block;
