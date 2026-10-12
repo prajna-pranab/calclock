@@ -52,13 +52,22 @@ self.addEventListener('install', ev => {
 				// mid-body death surfaces as put NetworkError; an extension
 				// rewriting the request surfaces the same way — the rewritten
 				// message (vs plain NetworkError) tells them apart.
-				const grab = () => fetch(file, {cache: 'reload'}).then(response => {
-					if (!response.ok)
-						throw new Error('HTTP ' + response.status);
-					if (response.redirected || response.url !== file)
-						throw new Error('rewritten: ' + response.url);
-					return cache.put(file, response);
-				});
+				// 10s TIMEOUT per attempt (his app screenshot, #2461 stuck
+				// 'trying to install'): a fetch that never settles left
+				// waitUntil pending forever, so waiting/SKIP_WAITING never
+				// happened and the app kept the OLD worker. Install MUST
+				// settle — timeout = failure = retry = logged skip.
+				const grab = () => Promise.race([
+					fetch(file, {cache: 'reload'}).then(response => {
+						if (!response.ok)
+							throw new Error('HTTP ' + response.status);
+						if (response.redirected || response.url !== file)
+							throw new Error('rewritten: ' + response.url);
+						return cache.put(file, response);
+					}),
+					new Promise((resolve, reject) =>
+						setTimeout(() => reject(new Error('timeout 10s')), 10000))
+				]);
 				return grab()
 					.catch(() => grab())
 					.catch(error => console.log('[install] skip ' + file + ' (' + error + ')'));
