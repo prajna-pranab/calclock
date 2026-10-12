@@ -10,11 +10,19 @@ const CACHED_VERSION = '1.2.5';
 // 1.2.3 dev note: any content change rides with a byte-nudge here so
 // browsers re-install the precache (fetch-failure falls back to cache).
 // 1.2.3b: inited-flag fix + versioned asset URLs in index.html.
-const CURR_CACHE = 'calclock';
+// 1.2.5 hardening (his desktop console, 12-Oct): precache name bumped so
+// the polluted old cache dies at activate; the three console errors all
+// traced to UNguarded caching — an extension's chrome-extension:// request
+// being put() ("Request scheme unsupported"), and a put network error
+// during install taking the WHOLE addAll down with it.
+const CURR_CACHE = 'calclock-1.2.5';
 
 // find the absolute root pathname
+// (1.2.5: origin + '/' + '/apps/...' produced a DOUBLE slash — some hosts
+//  redirect it and a redirected response cannot be cache.put()ed; join so
+//  root is origin + path, single slash)
 let pathElms = location.pathname.split('/');
-let root = location.origin + '/' + pathElms.slice(0, -1).join('/');
+let root = location.origin + pathElms.slice(0, -1).join('/');
 
 // files to cache
 let cacheFiles = [
@@ -30,13 +38,27 @@ let cacheFiles = [
 // add root path to cacheFiles
 cacheFiles = cacheFiles.map(file => root + '/' + file);
 
-// install the worker
+// install the worker — per-file, best effort: one flaky body logs and is
+// skipped instead of failing the whole precache (the old addAll was
+// atomic: any single network error = NO offline cache, silently)
 self.addEventListener('install', ev => {
 	ev.waitUntil(
 		caches.open(CURR_CACHE)
 		.then( cache => {
 			console.log('[installing worker] adding files to cache...');
-			return cache.addAll(cacheFiles);
+			return Promise.all(cacheFiles.map(file =>
+				fetch(file, {cache: 'reload'})
+				.then(response => {
+					if (!response.ok) {
+						console.log('[install] skip ' + file + ' (' + response.status + ')');
+						return;
+					}
+					return cache.put(file, response);
+				})
+				.catch(error => {
+					console.log('[install] skip ' + file + ' (' + error + ')');
+				})
+			));
 		})
 		.catch( error => {
 			console.log('[Cache Open] ' + CURR_CACHE + ' cache ' + error);
@@ -69,15 +91,20 @@ self.addEventListener('message', ev => {
     if (ev.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
-// handle fetch requests
+// handle fetch requests (1.2.5: ONLY ours — GET under this root. Extension
+// scheme / cross-origin / non-GET requests pass straight to the browser;
+// the unguarded put was throwing "Request scheme 'chrome-extension' is
+// unsupported" on every extension-injected request)
 self.addEventListener('fetch', ev => {
+    if (ev.request.method !== 'GET') return;
+    if (!ev.request.url.startsWith(root + '/')) return;
     ev.respondWith(
         fetch(ev.request)
         .then(response => {
             const clone = response.clone();
-            caches.open(CURR_CACHE).then(cache => {
-                cache.put(ev.request, clone);
-            });
+            caches.open(CURR_CACHE)
+                .then(cache => cache.put(ev.request, clone))
+                .catch(() => {});	// runtime cache is best effort — never surface
             return response;
         })
         .catch(() => {
