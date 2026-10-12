@@ -6,6 +6,18 @@
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and assistance from Claude AI
  * 1st version: Leo 13,517
  *
+ * version 1.2.5: 22 Libra♎ 13527	 -- Tweak's festival asks (his msg + his
+ 										Prajna's word "the next right thing"): (a) the Year
+ 										table's Festival line now carries the pagan name
+ 										(symbol + sign + name, his "Aries - Ostara" order);
+ 										(b) Jump-to gains a "UCÇ Pagan Festivals" optgroup
+ 										before Astro Age — selecting one lands on that
+ 										festival's FIRST day of the shown year, and the
+ 										skip buttons/animation cycle the eight first days
+ 										(wrapping across the year edge). Targets = the
+ 										table-driven startTriad/startDay (node-probed
+ 										13527 + leap 13530). VERSION + worker + ?v= tags
+ 										cut to 1.2.5 together (the 4ce0523 lesson).
  * version 1.2.4: 20 Libra♎ 13527	 -- Face controls (his spec, the Knowledge
  										Nugget show 10-Oct): a Today button beside the skip
  										buttons (resets to today — the menu's setToday, same
@@ -125,7 +137,7 @@
  */
 'use strict';
 {
-	const VERSION = '1.2.4',
+	const VERSION = '1.2.5',
 			DEG_PER_YR = 360 / 24000,	// fraction of a degree per year discounting precession
 			CIRC = 2 * Math.PI,			// 360deg in radians
 			MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
@@ -261,11 +273,27 @@
 
 	// Animation Callbacks ------------------------------------------------------
 
+	// festival jump (1.2.5, Tweak): cycle the eight festival FIRST days —
+	// candidates from the shown year and its neighbours so the cycle wraps
+	// across the year edge; targets are table-driven (startTriad/startDay),
+	// node-probed against 13527 and leap 13530 (doy-stable).
+	const festivalStep = reverse => {
+		const starts = [];
+		for (const y of [currentDate.year - 1, currentDate.year, currentDate.year + 1])
+			for (const f of UCCDate.FESTIVALS)
+				starts.push(new UCCDate(y, f.startTriad, f.startDay));
+		return starts
+			.filter(d => reverse ? d.days < currentDate.days : d.days > currentDate.days)
+			.reduce((best, d) => (!best || (reverse ? d.days > best.days : d.days < best.days)) ? d : best, null);
+	}
+
 	// calculate jump size
 	const jumpStep = reverse => {
 		let options = currOptions(), nextDate;
 		// go backwards if requested or reverse option is set and animating
 		reverse = reverse || options.reverse && options.animate;
+		// handle festival jump (1.2.5): cycle the eight of the year
+		if (options.jump >= 20) return festivalStep(reverse);
 		// handle yuga jump
 		if (options.jump < 8) {
 			if (reverse) {
@@ -786,8 +814,19 @@
 			case 17: nextDate = new UCCDate(18301, 0, 1); break;
 			case 18: nextDate = new UCCDate(20267, 0, 1); break;
 			case 19: nextDate = new UCCDate(22167, 0, 1); break;
+			// festival jumps (1.2.5): land on the festival's FIRST day of
+			// the shown year — table-driven anchors, no doy arithmetic
+			case 20: case 21: case 22: case 23:
+			case 24: case 25: case 26: case 27: {
+				const f = UCCDate.FESTIVALS[Number(options.jump) - 20];
+				nextDate = new UCCDate(currentDate.year, f.startTriad, f.startDay);
+				break;
+			}
 		}
-		redraw(nextDate.leapYear ? new UCCDate(nextDate.year, 0, 0) : nextDate);
+		// leap correction anchors the yuga/age year-boundary targets only —
+		// festival first days are mid-cycle dates (1.2.5)
+		if (options.jump >= 20) redraw(nextDate);
+		else redraw(nextDate.leapYear ? new UCCDate(nextDate.year, 0, 0) : nextDate);
 	}
 
 	// go back one step (day, deek, triad, ...) and redraw
@@ -1571,8 +1610,8 @@
 				Triad No: ${today.triad}<br>
 				Decan No: ${today.deekNumber}<br>
 				Leap Year: ${(today.leapYear ? 'yes' : 'no')}<br>
-				Festival: ${today.festivalNumber ? 
-					`<span class='festival'>${today.festivalSymbol} ${today.festival}</span>` :
+				Festival: ${today.festivalNumber ?
+					`<span class='festival'>${today.festivalSymbol} ${today.festival} - ${today.pagan}</span>` :
 					'no festival'}`;
 			Id('dataBr').style.display = 'block';
 		} else Id('dataBr').style.display = 'none';

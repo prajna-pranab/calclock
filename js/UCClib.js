@@ -4,6 +4,13 @@
  *
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and refactoring by Claude AI
  *
+ * version 1.2.5 22 Libra♎ 13527    - Pagan festival names (Tweak's list of
+ *                                     eight: Ostara..Imbolc) carried on each
+ *                                     FESTIVALS entry + a `pagan` getter for
+ *                                     the Year table's Festival line;
+ *                                     first-day anchors startTriad/startDay
+ *                                     per entry — probed (triad, day) against
+ *                                     both 13527 and leap 13530, doy-stable.
  * version 1.2.3 19 Libra♎ 13527    - A fifth language: **Kemmet**
  *                                     (the twelve months of Kēme as triad
  *                                     names — their year was 12x30+5 like
@@ -172,14 +179,14 @@ class UCCDate {
   // days 11-20) of the fixed-sign triads (deeks 5, 14, 23, 32).
   static get FESTIVALS() {
     return [
-      { min: -1,  wrap: 361, max: 7,   triad: 0,  number: 1, symbol: '\u2295\u2648' },  // aries:  Pisces d27-30 + intercalary + Aries d1-4
-      { min: 42,  max: 53,   triad: 1,  number: 2, symbol: '\u2297\u2649' },  // taurus:    deek 5 (triad days 11-20)
-      { min: 88,  max: 98,   triad: 3,  number: 3, symbol: '\u2295\u264B' },  // cancer:    Gemini d27-30 + intercalary + Cancer d1-4
-      { min: 133, max: 144,  triad: 4,  number: 4, symbol: '\u2297\u264C' },  // leo:       deek 14 (triad days 11-20)
-      { min: 179, max: 189,  triad: 6,  number: 5, symbol: '\u2295\u264E' },  // libra:     Virgo d27-30 + intercalary + Libra d1-4
-      { min: 224, max: 235,  triad: 7,  number: 6, symbol: '\u2297\u264F' },  // scorpio:   deek 23 (triad days 11-20)
-      { min: 270, max: 280,  triad: 9,  number: 7, symbol: '\u2295\u2651' },  // capricorn: Sagittarius d27-30 + intercalary + Capricorn d1-4
-      { min: 315, max: 326,  triad: 10, number: 8, symbol: '\u2297\u2652' },  // aquarius:  deek 32 (triad days 11-20)
+      { min: -1,  wrap: 361, max: 7,   triad: 0,  number: 1, symbol: '\u2295\u2648', pagan: 'Ostara', startTriad: 12, startDay: 27 },  // aries:  Pisces d27-30 + intercalary + Aries d1-4
+      { min: 42,  max: 53,   triad: 1,  number: 2, symbol: '\u2297\u2649', pagan: 'Bealtaine', startTriad: 2, startDay: 11 },  // taurus:    deek 5 (triad days 11-20)
+      { min: 88,  max: 98,   triad: 3,  number: 3, symbol: '\u2295\u264B', pagan: 'Litha', startTriad: 3, startDay: 27 },  // cancer:    Gemini d27-30 + intercalary + Cancer d1-4
+      { min: 133, max: 144,  triad: 4,  number: 4, symbol: '\u2297\u264C', pagan: 'Lughnasadh', startTriad: 5, startDay: 11 },  // leo:       deek 14 (triad days 11-20)
+      { min: 179, max: 189,  triad: 6,  number: 5, symbol: '\u2295\u264E', pagan: 'Mabon', startTriad: 6, startDay: 27 },  // libra:     Virgo d27-30 + intercalary + Libra d1-4
+      { min: 224, max: 235,  triad: 7,  number: 6, symbol: '\u2297\u264F', pagan: 'Samhain', startTriad: 8, startDay: 11 },  // scorpio:   deek 23 (triad days 11-20)
+      { min: 270, max: 280,  triad: 9,  number: 7, symbol: '\u2295\u2651', pagan: 'Yule', startTriad: 9, startDay: 27 },  // capricorn: Sagittarius d27-30 + intercalary + Capricorn d1-4
+      { min: 315, max: 326,  triad: 10, number: 8, symbol: '\u2297\u2652', pagan: 'Imbolc', startTriad: 11, startDay: 11 },  // aquarius:  deek 32 (triad days 11-20)
     ];
   }
 
@@ -575,6 +582,7 @@ class UCCDate {
   get festival()       { return this._festivalEntry ? this._triadName(this._festivalEntry.triad) : ''; }
   get festivalNumber() { return this._festivalEntry ? this._festivalEntry.number : 0; }
   get festivalSymbol() { return this._festivalEntry ? this._festivalEntry.symbol : ''; }
+  get pagan()         { return this._festivalEntry ? this._festivalEntry.pagan : ''; }
 
   // moon properties
   get moon()       { return UCCDate.MOONS[this._moonIndex]; }
