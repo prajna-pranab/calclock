@@ -46,19 +46,23 @@ self.addEventListener('install', ev => {
 		caches.open(CURR_CACHE)
 		.then( cache => {
 			console.log('[installing worker] adding files to cache...');
-			return Promise.all(cacheFiles.map(file =>
-				fetch(file, {cache: 'reload'})
-				.then(response => {
-					if (!response.ok) {
-						console.log('[install] skip ' + file + ' (' + response.status + ')');
-						return;
-					}
+			return Promise.all(cacheFiles.map(file => {
+				// fetch + put with ONE retry: his desktop line drops bodies
+				// on the big files (zodiac.png, 828KB = 15x the next) and a
+				// mid-body death surfaces as put NetworkError; an extension
+				// rewriting the request surfaces the same way — the rewritten
+				// message (vs plain NetworkError) tells them apart.
+				const grab = () => fetch(file, {cache: 'reload'}).then(response => {
+					if (!response.ok)
+						throw new Error('HTTP ' + response.status);
+					if (response.redirected || response.url !== file)
+						throw new Error('rewritten: ' + response.url);
 					return cache.put(file, response);
-				})
-				.catch(error => {
-					console.log('[install] skip ' + file + ' (' + error + ')');
-				})
-			));
+				});
+				return grab()
+					.catch(() => grab())
+					.catch(error => console.log('[install] skip ' + file + ' (' + error + ')'));
+			}));
 		})
 		.catch( error => {
 			console.log('[Cache Open] ' + CURR_CACHE + ' cache ' + error);
