@@ -18,6 +18,10 @@
  										table-driven startTriad/startDay (node-probed
  										13527 + leap 13530). VERSION + worker + ?v= tags
  										cut to 1.2.5 together (the 4ce0523 lesson).
+ 										(c) Year table now appends the festival day-of
+ 										counter — "… Imbolc [5]" (his example; epoch-day
+ 										math with year-1 fallback, so the Ostara wrap and
+ 										leap intercalary count free — probed 1..len).
  * version 1.2.4: 20 Libra♎ 13527	 -- Face controls (his spec, the Knowledge
  										Nugget show 10-Oct): a Today button beside the skip
  										buttons (resets to today — the menu's setToday, same
@@ -1606,12 +1610,24 @@
 
 		// draw the YEAR data table
 		if (options.dataYear) {
+			// festival day-of counter (his spec, 12-Oct): [N] = which day
+			// of this festival — start picked by EPOCH days (year-1 fallback
+			// for the Ostara wrap), so intercalary and leap fall out free;
+			// node-probed 13527 + leap 13530: every window counts 1..len,
+			// Jan doy4 of 13528 = day 8 of the wrap ✓
+			const fday = today.festivalNumber ? (() => {
+				const e = UCCDate.FESTIVALS[today.festivalNumber - 1];
+				let s = new UCCDate(today.year, e.startTriad, e.startDay);
+				if (s.days > today.days)
+					s = new UCCDate(today.year - 1, e.startTriad, e.startDay);
+				return ` [${today.days - s.days + 1}]`;
+			})() : '';
 			Id('dataBr').innerHTML = `Quarter: ${today.quarter}<br>
 				Triad No: ${today.triad}<br>
 				Decan No: ${today.deekNumber}<br>
 				Leap Year: ${(today.leapYear ? 'yes' : 'no')}<br>
 				Festival: ${today.festivalNumber ?
-					`<span class='festival'>${today.festivalSymbol} ${today.festival} - ${today.pagan}</span>` :
+					`<span class='festival'>${today.festivalSymbol} ${today.festival} - ${today.pagan}${fday}</span>` :
 					'no festival'}`;
 			Id('dataBr').style.display = 'block';
 		} else Id('dataBr').style.display = 'none';
