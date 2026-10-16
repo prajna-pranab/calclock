@@ -9,10 +9,10 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 	<title>UCC Çync</title>
 	<!-- load libraries, manifest and stylesheets -->
-	<script src="js/timerlib.js?v=1.2.5" type="text/javascript"></script>
-	<script src="js/UCClib.js?v=1.2.5" type="text/javascript"></script>
+	<script src="js/timerlib.js?v=1.2.6" type="text/javascript"></script>
+	<script src="js/UCClib.js?v=1.2.6" type="text/javascript"></script>
 	<link rel="manifest" href="manifest.json" />
-	<link rel="stylesheet" href="css/calclock.css?v=1.2.5" />
+	<link rel="stylesheet" href="css/calclock.css?v=1.2.6" />
 	<link rel="shortcut icon" type="image/png" href="asset/images/ucc32ico.png" />
 	<link rel="apple-touch-icon-precomposed" href="asset/images/ucc512ico.png" />
 </head>
@@ -32,9 +32,9 @@
 		</canvas>
 		<div id="trigram"><div></div><div></div><div></div></div>
 		<div id="skipBtns" title="Skip back and forward — feature request from Andy Zen Pagan (Holistic Radio) and Tweak">
-			<button id="skipBack" type="button" aria-label="Skip back">&minus;</button>
-			<button id="skipToday" type="button" title="Reset to today">Today</button>
 			<button id="skipFwd" type="button" aria-label="Skip forward">+</button>
+			<button id="skipToday" type="button" title="Reset to today">Today</button>
+			<button id="skipBack" type="button" aria-label="Skip back">&minus;</button>
 			<button id="stepChip" type="button" title="Skip size — click to change"></button>
 		</div>
 		<div id='dateHeading'></div>
@@ -250,12 +250,19 @@
 						</span>
 						Heading days
 					</label><br>
-					<label title="Show today's Gregorian date under the heading?">
+					<label title="Show today's Gregorian day name in the date sub-header?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_gregDay'>
+							<span class="cbValue"></span>
+						</span>
+						Gregorian day name
+					</label><br>
+					<label title="Show today's Gregorian date as the sub-header under the heading?">
 						<span class="chkbox">
 							<input type="checkbox" id='ctl_gregFooter'>
 							<span class="cbValue"></span>
 						</span>
-						Gregorian footer
+						Gregorian Date Sub Header
 					</label><br>
 					<label title="Show Day Marker?">
 						<span class="chkbox">
@@ -476,6 +483,6 @@
 			let myTimer = new timer(requestAnimationFrame(tick), 1000);
 	}());
 	</script>
-	<script src="js/calclock.js?v=1.2.5" type="text/javascript" defer></script>
+	<script src="js/calclock.js?v=1.2.6" type="text/javascript" defer></script>
 </body>
 </html>

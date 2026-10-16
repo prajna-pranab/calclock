@@ -6,6 +6,20 @@
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and assistance from Claude AI
  * 1st version: Leo 13,517
  *
+ * version 1.2.6: 26 Libra♎ 13527	 -- Tweak's five tweaks (his TG spec,
+ 										16-Oct, his DM to Setu): (a) skip buttons swapped —
+ 										"+" left, "-" right, the app moving counter-clockwise
+ 										/ widdershins; (b) the Year table's Festival line
+ 										shows whenever we are affirmatively in a festival —
+ 										independent of the Year Table option; (c) planetary
+ 										day names gain their capital-D "Day" (SunsDay his
+ 										way, never SunDay) wherever we show them; (d)
+ 										"Gregorian day name" Show-menu toggle under 'Heading
+ 										days' — the weekday rides the sub-header whatever the
+ 										UCÇ format — and 'Gregorian footer' renamed "Gregorian
+ 										Date Sub Header"; (e) centre-dot (·) separators
+ 										across both date headers. VERSION + worker + ?v= tags
+ 										cut to 1.2.6 together (the 4ce0523 lesson).
  * version 1.2.5: 22 Libra♎ 13527	 -- Tweak's festival asks (his msg + his
  										Prajna's word "the next right thing"): (a) the Year
  										table's Festival line now carries the pagan name
@@ -141,7 +155,7 @@
  */
 'use strict';
 {
-	const VERSION = '1.2.5',
+	const VERSION = '1.2.6',
 			DEG_PER_YR = 360 / 24000,	// fraction of a degree per year discounting precession
 			CIRC = 2 * Math.PI,			// 360deg in radians
 			MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
@@ -155,22 +169,30 @@
 		isInstalled = false,			// set true when installed as PWA
 		inited = false;					// set after setOptions(): draws may then sync options from the controls
 
-	// Gregorian footer formats (Tweak, 1.2.3): CE date mirroring the
-	// UCÇ heading format level — full/long/medium/short/sortable
+	// Gregorian Date Sub Header formats (1.2.6, Tweak: renamed from
+	// "footer"; centre-dot parts; the weekday now rides its own toggle,
+	// so level 0 mirrors level 1 minus the day name)
 	const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
 		'Thursday', 'Friday', 'Saturday'];
 	const MONTHS_FULL = ['January', 'February', 'March', 'April', 'May',
 		'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 	const CE_FMT = {
-		0: d => WEEKDAYS[d.getUTCDay()] + ', ' + d.getUTCDate() + ' ' +
-			MONTHS_FULL[d.getUTCMonth()] + ' ' + d.getUTCFullYear(),
-		1: d => d.getUTCDate() + ' ' + MONTHS_FULL[d.getUTCMonth()] + ' ' + d.getUTCFullYear(),
-		2: d => d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()] + ' ' + d.getUTCFullYear(),
-		3: d => ('0' + d.getUTCDate()).slice(-2) + '/' +
-			('0' + (d.getUTCMonth() + 1)).slice(-2) + '/' + d.getUTCFullYear(),
-		4: d => d.getUTCFullYear() + '.' + ('0' + (d.getUTCMonth() + 1)).slice(-2) +
-			'.' + ('0' + d.getUTCDate()).slice(-2),
+		0: d => d.getUTCDate() + ' · ' + MONTHS_FULL[d.getUTCMonth()] + ' · ' + d.getUTCFullYear(),
+		1: d => d.getUTCDate() + ' · ' + MONTHS_FULL[d.getUTCMonth()] + ' · ' + d.getUTCFullYear(),
+		2: d => d.getUTCDate() + ' · ' + MONTHS[d.getUTCMonth()] + ' · ' + d.getUTCFullYear(),
+		3: d => ('0' + d.getUTCDate()).slice(-2) + ' · ' +
+			('0' + (d.getUTCMonth() + 1)).slice(-2) + ' · ' + d.getUTCFullYear(),
+		4: d => d.getUTCFullYear() + ' · ' + ('0' + (d.getUTCMonth() + 1)).slice(-2) +
+			' · ' + ('0' + d.getUTCDate()).slice(-2),
 	};
+
+	// Planetary day names (1.2.6, Tweak): capital-D "Day" rides the ten
+	// Western names only — SunsDay his way, never SunDay; Greek/Hindu
+	// decan names pass through untouched
+	const PLANET_DAYS = ['Pluto', 'Moon', 'Mercury', 'Venus', 'Sun', 'Mars',
+		'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
+	const planetDay = n => n === 'Sun' ? 'SunsDay'
+		: (PLANET_DAYS.includes(n) ? n + 'Day' : n);
 
 	// Options and titles updating ----------------------------------------------
 
@@ -190,6 +212,7 @@
 			dateHead: Id('ctl_dateHead').checked,
 			headingDays: Id('ctl_headingDays').checked,
 			gregFooter: Id('ctl_gregFooter').checked,
+			gregDay: Id('ctl_gregDay').checked,
 			skipBtns: Id('ctl_skipBtns').checked,
 			moon: Id('ctl_moon').checked,
 			dayMkr: Id('ctl_dayMkr').checked,
@@ -225,6 +248,7 @@
 		Id('ctl_dateHead').checked = options.dateHead;
 		Id('ctl_headingDays').checked = options.headingDays !== false;
 		Id('ctl_gregFooter').checked = options.gregFooter;
+		Id('ctl_gregDay').checked = options.gregDay;
 		Id('ctl_skipBtns').checked = options.skipBtns !== false;
 		Id('ctl_moon').checked = options.moon;
 		Id('ctl_dayMkr').checked = options.dayMkr;
@@ -505,6 +529,7 @@
 		setDateHead: Id('ctl_dateHead'),
 		setHeadingDays: Id('ctl_headingDays'),
 		setGregFooter: Id('ctl_gregFooter'),
+		setGregDay: Id('ctl_gregDay'),
 		setSkipBtns: Id('ctl_skipBtns'),
 		setMoon: Id('ctl_moon'),
 		setDayMkr: Id('ctl_dayMkr'),
@@ -615,6 +640,7 @@
 				this.setDateHead.removeEventListener('change', refresh);
 				this.setHeadingDays.removeEventListener('change', refresh);
 				this.setGregFooter.removeEventListener('change', refresh);
+				this.setGregDay.removeEventListener('change', refresh);
 				this.setSkipBtns.removeEventListener('change', refresh);
 				this.setMoon.removeEventListener('change', refresh);
 				this.setDayMkr.removeEventListener('change', refresh);
@@ -664,6 +690,7 @@
 				this.setDateHead.addEventListener('change', refresh);
 				this.setHeadingDays.addEventListener('change', refresh);
 				this.setGregFooter.addEventListener('change', refresh);
+				this.setGregDay.addEventListener('change', refresh);
 				this.setSkipBtns.addEventListener('change', refresh);
 				this.setMoon.addEventListener('change', refresh);
 				this.setDayMkr.addEventListener('change', refresh);
@@ -1568,12 +1595,25 @@
 		// call the drawing functions passing them configuration data as a settings object
 		// -----------------------------------------------------------------------
 
-		// write today's UCC Date
+		// write today's UCC Date (1.2.6, Tweak: planetary day name with
+		// its Day, and centre-dot separators across the whole date)
 		if (options.dateHead) {
 			let dateStrs = [today.full, today.long, today.medium, today.short, today.sortable];
+			// glued levels (medium/short) split at the symbol, sortable at
+			// its dots, spaced levels at spaces — every part meets at ·
+			const dotted = fmt => {
+				const s = dateStrs[fmt];
+				if (fmt === 4) return s.replace(/\./g, ' · ');
+				if (fmt === 2 || fmt === 3) {
+					const m = s.match(/^(\d*)([^\d\s]+)(\d+)$/);
+					if (m) return (m[1] ? m[1] + ' · ' : '') + m[2] + ' · ' + m[3];
+					return s; // intercalary odd forms pass through untouched
+				}
+				return s.replace(/ +/g, ' · ');
+			};
 			Id('dateHeading').innerHTML = (options.headingDays !== false && today.deekDay)
-				? `${today.deekDay} · ${dateStrs[options.dateFmt]}`
-				: dateStrs[options.dateFmt];
+				? `${planetDay(today.deekDay)} · ${dotted(options.dateFmt)}`
+				: dotted(options.dateFmt);
 			Id('dateHeading').style.display = 'block';
 		} else Id('dateHeading').style.display = 'none';
 
@@ -1581,11 +1621,14 @@
 		// lives in the draw path so the FIRST draw labels it too
 		syncStepChip();
 
-		// Gregorian footer (Tweak, 1.2.3): CE date under the heading in the
-		// same format level as the UCÇ heading — a small relative block;
-		// the canvas keeps its own sizing (his worry, measured at QC)
-		if (options.dateHead && options.gregFooter) {
-			Id('dateFooter').innerHTML = CE_FMT[options.dateFmt || 1](today.utcDate);
+		// Gregorian Date Sub Header (1.2.6, Tweak: renamed from footer;
+		// weekday rides its own toggle whatever the UCÇ format — one line,
+		// centre-dot parts, shown when either toggle is on)
+		if (options.dateHead && (options.gregFooter || options.gregDay)) {
+			const parts = [];
+			if (options.gregDay) parts.push(WEEKDAYS[today.utcDate.getUTCDay()]);
+			if (options.gregFooter) parts.push(CE_FMT[options.dateFmt || 1](today.utcDate));
+			Id('dateFooter').innerHTML = parts.join(' · ');
 			Id('dateFooter').style.display = 'block';
 		} else Id('dateFooter').style.display = 'none';
 
@@ -1600,7 +1643,7 @@
 				"Sevens", "Eights", "Nines", "Tens"];
 			Id('dataTr').innerHTML = `Great Year Day No: ${commafy(today.days)}<br>
 				Day Name: ${today.intercal ? today.intercal + ' day' :
-					`${deekDays[(today.day + 9) % 10]}day/${today.deekDay}`}<br>
+					`${deekDays[(today.day + 9) % 10]}day/${planetDay(today.deekDay)}`}<br>
 				Moon: ${today.moonSymbol} ${today.moon}<br>
 				Day of Year No: ${today.doy}<br>
 				${weekDays[today.jDate.getDay()]} ${today.jDate.getDate()}
@@ -1608,8 +1651,11 @@
 			Id('dataTr').style.display = 'block';
 		} else Id('dataTr').style.display = 'none';
 
-		// draw the YEAR data table
-		if (options.dataYear) {
+		// YEAR data table + Festival line (1.2.6, Tweak): the Festival
+		// line is the table's bottom line, but shows on its own whenever
+		// we are affirmatively in a festival — independent of the table's
+		// Show/Don't Show option
+		if (options.dataYear || today.festivalNumber) {
 			// festival day-of counter (his spec, 12-Oct): [N] = which day
 			// of this festival — start picked by EPOCH days (year-1 fallback
 			// for the Ostara wrap), so intercalary and leap fall out free;
@@ -1622,11 +1668,11 @@
 					s = new UCCDate(today.year - 1, e.startTriad, e.startDay);
 				return ` [${today.days - s.days + 1}]`;
 			})() : '';
-			Id('dataBr').innerHTML = `Quarter: ${today.quarter}<br>
+			Id('dataBr').innerHTML = (options.dataYear ? `Quarter: ${today.quarter}<br>
 				Triad No: ${today.triad}<br>
 				Decan No: ${today.deekNumber}<br>
-				Leap Year: ${(today.leapYear ? 'yes' : 'no')}<br>
-				Festival: ${today.festivalNumber ?
+				Leap Year: ${(today.leapYear ? 'yes' : 'no')}<br>` : '') +
+				`Festival: ${today.festivalNumber ?
 					`<span class='festival'>${today.festivalSymbol} ${today.festival} - ${today.pagan}${fday}</span>` :
 					'no festival'}`;
 			Id('dataBr').style.display = 'block';
@@ -2158,6 +2204,7 @@
 	    deekSymb: true, ysf: false, sidRing: true, gysf: true,
 	    yearMkr: true, yearNum: true, gyRing: true, sandhis: true,
 	    vrp: true, helio: false, constMarkers: false, gregFooter: false,
+	    gregDay: false,
 	    installed: false
 	});
 		// update options from local storage if they've been saved
