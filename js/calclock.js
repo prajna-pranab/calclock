@@ -6,18 +6,25 @@
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and assistance from Claude AI
  * 1st version: Leo 13,517
  *
- * version 1.2.7: 28 Libra♎ 13527	 -- Tweak's two asks (his TG, 17-Oct):
- 										(a) the Jump-to festival options each carry their
- 										zodiac symbol — "Aries♈ - Ostara" his append-the-
- 										symbol wording (menu order kept; Mabon/Libra kept
- 										eight-for-eight); (b) the Show menu's second label
- 										group no longer disappears off the panel's right
- 										edge — 1.2.6's longer labels ("Gregorian Date Sub
- 										Header") widened group one under flex column wrap
- 										at max-height 20.5rem, so group two wrapped into
- 										overflow:hidden; now column nowrap + vertical
- 										scroll, scoped to the Show tab. VERSION + worker
- 										+ ?v= tags cut together.
+ * version 1.2.7: 28 Libra♎ 13527	 -- Tweak's two asks (his TG, 17-Oct)
+ 										+ Prajna's review fixes (18-Oct): (a) the Jump-to
+ 										festival options carry their zodiac symbol in
+ 										Litty's order — "Ostara - Aries♈️" his msg142
+ 										verbatim (Prajna's ruling: follow Litty's lead),
+ 										eight-for-eight incl. Mabon/Libra; (b) the Show
+ 										menu's second label group no longer disappears
+ 										off the panel's right edge — 1.2.6's longer
+ 										labels ("Gregorian Date Sub Header") widened
+ 										group one under flex column wrap at max-height
+ 										20.5rem, so group two wrapped into
+ 										overflow:hidden (measured 8 of 22 labels clipped
+ 										→ 0); (c) the Date tab gains the same scrollable
+ 										single column (Prajna's option C at his 18-Oct
+ 										review — his "Jump-to combo buttons are clipped
+ 										on the right"): the four groups flow below Step
+ 										Size instead of the last wrapping right with the
+ 										long combo. VERSION + worker + ?v= tags cut
+ 										together.
  * version 1.2.6: 26 Libra♎ 13527	 -- Tweak's five tweaks (his TG spec,
  										16-Oct, his DM to Setu): (a) skip buttons swapped —
  										"+" left, "-" right, the app moving counter-clockwise

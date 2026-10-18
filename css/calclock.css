@@ -410,6 +410,19 @@ a {
 #controls > div#setShow > div > div {
 	flex-shrink: 0;
 }
+/* Date tab (1.2.7, Prajna's option C at his review): same
+   scrollable single column — the four groups (buttons, step
+   back/fwd, Step Size, Names/Format/Jump-to) flow below Step Size
+   instead of wrapping the last group into the right column where
+   the long festival Jump-to combo clipped. ~28rem of content vs
+   the 20.5rem cap was forcing that wrap. */
+#controls > div#setNav > div {
+	flex-flow: column nowrap;
+	overflow-y: auto;
+}
+#controls > div#setNav > div > div {
+	flex-shrink: 0;
+}
 /* settings subdivisions */
 #controls > div > div > div, #controls > div > div > div > div {
 	padding: 0 0 1rem;
