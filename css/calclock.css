@@ -398,6 +398,18 @@ a {
 #controls > div > div:last-child p:first-child {
 	margin-top: .5rem;
 }
+/* Show tab (1.2.7, Tweak): one scrollable column. 1.2.6's longer
+   labels ("Gregorian Date Sub Header") widened the first group,
+   pushing the second (Moon…sandhi) off the panel's right edge where
+   overflow:hidden clipped it. nowrap stacks both groups; vertical
+   scroll keeps every descriptor reachable. */
+#controls > div#setShow > div {
+	flex-flow: column nowrap;
+	overflow-y: auto;
+}
+#controls > div#setShow > div > div {
+	flex-shrink: 0;
+}
 /* settings subdivisions */
 #controls > div > div > div, #controls > div > div > div > div {
 	padding: 0 0 1rem;

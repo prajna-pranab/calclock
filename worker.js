@@ -6,7 +6,7 @@
 */
 
 // Cached version of CalClock
-const CACHED_VERSION = '1.2.6';
+const CACHED_VERSION = '1.2.7';
 // 1.2.3 dev note: any content change rides with a byte-nudge here so
 // browsers re-install the precache (fetch-failure falls back to cache).
 // 1.2.3b: inited-flag fix + versioned asset URLs in index.html.
@@ -15,7 +15,7 @@ const CACHED_VERSION = '1.2.6';
 // traced to UNguarded caching — an extension's chrome-extension:// request
 // being put() ("Request scheme unsupported"), and a put network error
 // during install taking the WHOLE addAll down with it.
-const CURR_CACHE = 'calclock-1.2.6';
+const CURR_CACHE = 'calclock-1.2.7';
 
 // find the absolute root pathname
 // (1.2.5: origin + '/' + '/apps/...' produced a DOUBLE slash — some hosts

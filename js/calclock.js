@@ -6,6 +6,18 @@
  * by Swami Prajna Pranab with input from Litmus A Freeman, code review and assistance from Claude AI
  * 1st version: Leo 13,517
  *
+ * version 1.2.7: 28 Libra♎ 13527	 -- Tweak's two asks (his TG, 17-Oct):
+ 										(a) the Jump-to festival options each carry their
+ 										zodiac symbol — "Aries♈ - Ostara" his append-the-
+ 										symbol wording (menu order kept; Mabon/Libra kept
+ 										eight-for-eight); (b) the Show menu's second label
+ 										group no longer disappears off the panel's right
+ 										edge — 1.2.6's longer labels ("Gregorian Date Sub
+ 										Header") widened group one under flex column wrap
+ 										at max-height 20.5rem, so group two wrapped into
+ 										overflow:hidden; now column nowrap + vertical
+ 										scroll, scoped to the Show tab. VERSION + worker
+ 										+ ?v= tags cut together.
  * version 1.2.6: 26 Libra♎ 13527	 -- Tweak's five tweaks (his TG spec,
  										16-Oct, his DM to Setu): (a) skip buttons swapped —
  										"+" left, "-" right, the app moving counter-clockwise
@@ -155,7 +167,7 @@
  */
 'use strict';
 {
-	const VERSION = '1.2.6',
+	const VERSION = '1.2.7',
 			DEG_PER_YR = 360 / 24000,	// fraction of a degree per year discounting precession
 			CIRC = 2 * Math.PI,			// 360deg in radians
 			MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
