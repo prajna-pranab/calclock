@@ -23,8 +23,19 @@
  										review — his "Jump-to combo buttons are clipped
  										on the right"): the four groups flow below Step
  										Size instead of the last wrapping right with the
- 										long combo. VERSION + worker + ?v= tags cut
- 										together.
+ 										long combo. Review round two (same day, his
+ 										eye): (d) the festival Jump-to moves to sit
+ 										directly below Step Size; (e) "UCC Dates" label
+ 										renamed "Date Format" (it drives both UCÇ and
+ 										Greg formats now); (f) the Show tab regroups by
+ 										function — eight switch groups with the
+ 										settings padding as spacers: Menu+Skip /
+ 										tables / headings+Gregorian / day marks / Moon /
+ 										rings (Sidereal, Gt Yr, Year-so-far, Gt-Yr-so-
+ 										far — the two so-far arcs placed with the rings
+ 										by Setu, Prajna to eyeball) / year marks /
+ 										Sandhis+VRP+Helio. VERSION + worker + ?v= tags
+ 										cut together.
  * version 1.2.6: 26 Libra♎ 13527	 -- Tweak's five tweaks (his TG spec,
  										16-Oct, his DM to Setu): (a) skip buttons swapped —
  										"+" left, "-" right, the app moving counter-clockwise

@@ -82,6 +82,44 @@
 					</label>
 				</div>
 				<div>
+					<label>Jump-to<br>
+						<select id='ctl_jump' title="Jump to a Pagan Festival, Astrological Age or Yuga">
+							<optgroup label="UCÇ Pagan Festivals">
+								<option value=20>Ostara - Aries♈️</option>
+								<option value=21>Bealtaine - Taurus♉️</option>
+								<option value=22>Litha - Cancer♋️</option>
+								<option value=23>Lughnasadh - Leo♌️</option>
+								<option value=24>Mabon - Libra♎️</option>
+								<option value=25>Samhain - Scorpio♏️</option>
+								<option value=26>Yule - Capricorn♑️</option>
+								<option value=27>Imbolc - Aquarius♒️</option>
+							</optgroup><optgroup label="Astro Age">
+								<option value=8 selected >Virgo</option>
+								<option value=9>Leo</option>
+								<option value=10>Cancer</option>
+								<option value=11>Gemini</option>
+								<option value=12>Taurus</option>
+								<option value=13>Aries</option>
+								<option value=14>Pisces</option>
+								<option value=15>Aquarius</option>
+								<option value=16>Capricorn</option>
+								<option value=17>Sagittarius</option>
+								<option value=18>Scorpio</option>
+								<option value=19>Libra</option>
+							</optgroup><optgroup label="Yuga">
+								<option class='satya' value=0>Satya Desc</option>
+								<option class='treta' value=1>Treta Desc</option>
+								<option class='dwapara' value=2>Dwapara Desc</option>
+								<option class='kali' value=3>Kali Desc</option>
+								<option class='kali' value=4>Kali Asc</option>
+								<option class='dwapara' value=5>Dwapara Asc</option>
+								<option class='treta' value=6>Treta Asc</option>
+								<option class='satya' value=7>Satya Asc</option>
+							</optgroup>
+						</select>
+					</label>
+				</div>
+				<div>
 					<div>
 						<label>Names<br>
 							<select id='ctl_lang' title="Triad/Deekday Language">
@@ -96,7 +134,7 @@
 						</label>
 					</div>
 					<div>
-						<label>UCC&nbsp;Dates<br>
+						<label>Date Format<br>
 							<select id='ctl_dateFmt' title="Change UCC Date Format">
 								<optgroup label="Format">
 									<option value=0>Full</option>
@@ -104,44 +142,6 @@
 									<option value=2>Medium</option>
 									<option value=3>Short</option>
 									<option value=4>Sortable</option>
-								</optgroup>
-							</select>
-						</label>
-					</div>
-					<div>
-						<label>Jump-to<br>
-							<select id='ctl_jump' title="Jump to a Pagan Festival, Astrological Age or Yuga">
-								<optgroup label="UCÇ Pagan Festivals">
-									<option value=20>Ostara - Aries♈️</option>
-									<option value=21>Bealtaine - Taurus♉️</option>
-									<option value=22>Litha - Cancer♋️</option>
-									<option value=23>Lughnasadh - Leo♌️</option>
-									<option value=24>Mabon - Libra♎️</option>
-									<option value=25>Samhain - Scorpio♏️</option>
-									<option value=26>Yule - Capricorn♑️</option>
-									<option value=27>Imbolc - Aquarius♒️</option>
-								</optgroup><optgroup label="Astro Age">
-									<option value=8 selected >Virgo</option>
-									<option value=9>Leo</option>
-									<option value=10>Cancer</option>
-									<option value=11>Gemini</option>
-									<option value=12>Taurus</option>
-									<option value=13>Aries</option>
-									<option value=14>Pisces</option>
-									<option value=15>Aquarius</option>
-									<option value=16>Capricorn</option>
-									<option value=17>Sagittarius</option>
-									<option value=18>Scorpio</option>
-									<option value=19>Libra</option>
-								</optgroup><optgroup label="Yuga">
-									<option class='satya' value=0>Satya Desc</option>
-									<option class='treta' value=1>Treta Desc</option>
-									<option class='dwapara' value=2>Dwapara Desc</option>
-									<option class='kali' value=3>Kali Desc</option>
-									<option class='kali' value=4>Kali Asc</option>
-									<option class='dwapara' value=5>Dwapara Asc</option>
-									<option class='treta' value=6>Treta Asc</option>
-									<option class='satya' value=7>Satya Asc</option>
 								</optgroup>
 							</select>
 						</label>
@@ -214,7 +214,9 @@
 							<span class="cbValue"></span>
 						</span>
 						Skip buttons
-					</label><br>
+					</label>
+				</div>
+				<div>
 					<label title="Show Day table?">
 						<span class="chkbox">
 							<input type="checkbox" id='ctl_dataDay' checked>
@@ -235,7 +237,9 @@
 							<span class="cbValue"></span>
 						</span>
 						Great Year Table
-					</label><br>
+					</label>
+				</div>
+				<div>
 					<label title="Show today's UCC date?">
 						<span class="chkbox">
 							<input type="checkbox" id='ctl_dateHead' checked>
@@ -263,7 +267,9 @@
 							<span class="cbValue"></span>
 						</span>
 						Gregorian Date Sub Header
-					</label><br>
+					</label>
+				</div>
+				<div>
 					<label title="Show Day Marker?">
 						<span class="chkbox">
 							<input type="checkbox" id='ctl_dayMkr' checked>
@@ -293,6 +299,22 @@
 							<span class="cbValue"></span>
 						</span>
 						Moon
+					</label>
+				</div>
+				<div>
+					<label title="Show Sidereal Ring (constellations)?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_sidRing' checked>
+							<span class="cbValue"></span>
+						</span>
+						Sidereal Ring
+					</label><br>
+					<label title="Show Great Year Ring?">
+						<span class="chkbox">
+							<input type="checkbox" id='ctl_gyRing' checked>
+							<span class="cbValue"></span>
+						</span>
+						Gt Yr Ring
 					</label><br>
 					<label title="Show Year-So-Far?">
 						<span class="chkbox">
@@ -301,20 +323,15 @@
 						</span>
 						Year-so-far
 					</label><br>
-					<label title="Show Sidereal Ring (constellations)?">
-						<span class="chkbox">
-							<input type="checkbox" id='ctl_sidRing' checked>
-							<span class="cbValue"></span>
-						</span>
-						Sidereal Ring
-					</label><br>
 					<label title="Show Great-Year-So-Far?">
 						<span class="chkbox">
 							<input type="checkbox" id='ctl_gysf' checked>
 							<span class="cbValue"></span>
 						</span>
 						Gt-Yr-so-far
-					</label><br>
+					</label>
+				</div>
+				<div>
 					<label title="Show Year Marker?">
 						<span class="chkbox">
 							<input type="checkbox" id='ctl_yearMkr' checked>
@@ -328,14 +345,9 @@
 							<span class="cbValue"></span>
 						</span>
 						Year Number
-					</label><br>
-					<label title="Show Great Year Ring?">
-						<span class="chkbox">
-							<input type="checkbox" id='ctl_gyRing' checked>
-							<span class="cbValue"></span>
-						</span>
-						Gt Yr Ring
-					</label><br>
+					</label>
+				</div>
+				<div>
 					<label title="Show sandhi lines?">
 						<span class="chkbox">
 							<input type="checkbox" id='ctl_sandhis' checked>
@@ -356,7 +368,8 @@
 							<span class="cbValue"></span>
 						</span>
 						Helio Day Names
-					</label><br>
+					</label>
+				</div>
 				</div>
 			</div>
 		</div>
